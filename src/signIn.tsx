@@ -3,6 +3,7 @@ import "./App.css";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -69,27 +70,73 @@ const Check = styled.button`
   margin-right: 50px;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Rubik Bubbles", system-ui;
+  
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
 function SignIn() {
   const [showPswd, setShowPswd] = useState<boolean>(false);
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const toggleShowPassword = () => {
     setShowPswd((prevState) => !prevState);
   };
 
+  const handleBackClick = () => {
+    navigate("/");
+  };
+
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find((u: { id: string; password: string }) => u.id === id && u.password === password);
+    if (user) {
+      // 로그인 성공
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      navigate("/");
+    } else {
+      setError("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+  };
+
   return (
     <SignContainer>
-      <IdContainer>
-        Id
-        <Id type="text" />
-      </IdContainer>
-      <PwContainer>
-        Password
-        <Password type={showPswd ? "text" : "password"} />
-        <TogglePasswordButton onClick={toggleShowPassword}>
-          {showPswd ? <FaEyeSlash /> : <FaEye />}
-        </TogglePasswordButton>
-      </PwContainer>
-      <Check>Sign in</Check>
+      <BackButton onClick={handleBackClick}>Back</BackButton>
+      <form onSubmit={handleSignIn}>
+        <IdContainer>
+          Id
+          <Id type="text" value={id} onChange={(e) => setId(e.target.value)} required />
+        </IdContainer>
+        <PwContainer>
+          Password
+          <Password 
+            type={showPswd ? "text" : "password"} 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
+          />
+          <TogglePasswordButton type="button" onClick={toggleShowPassword}>
+            {showPswd ? <FaEyeSlash /> : <FaEye />}
+          </TogglePasswordButton>
+        </PwContainer>
+        {error && <div style={{ color: "red" }}>{error}</div>}
+        <Check type="submit">Sign in</Check>
+      </form>
     </SignContainer>
   );
 }
