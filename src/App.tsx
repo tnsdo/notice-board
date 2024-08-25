@@ -41,7 +41,7 @@ const Welcome = styled.div`
 `;
 
 const HomeCat = styled.img`
-  border-radius: 50%;
+  border-radius: 10%;
   width: 100px;
   height: 100px;
   object-fit: fill;
@@ -57,12 +57,16 @@ const SignIn = styled.button`
   border-radius: 0;
   background-color: white;
   margin-right: 20px;
+  font-family: "Rubik Bubbles", system-ui;
+  border-radius: 10%;
 `;
 
 const SignUp = styled.button`
+  font-family: "Rubik Bubbles", system-ui;
   border-color: black;
   border-radius: 0;
   background-color: white;
+  border-radius: 10%;
 `;
 
 function App() {
