@@ -60,13 +60,16 @@ function HomeBsignup() {
   const handSignInClick = () => {
     navigate("/signin");
   };
+  const handSignUpClick = () => {
+    navigate("/signup");
+  };
   return (
     <SignContainer>
       <Welcome>Welcome!</Welcome>
       <HomeCat src={homecat} alt="homecat" />
       <Sign>
         <SignIn onClick={handSignInClick}>Sign in</SignIn>
-        <SignUp>Sign up</SignUp>
+        <SignUp onClick={handSignUpClick}>Sign up</SignUp>
       </Sign>
     </SignContainer>
   );

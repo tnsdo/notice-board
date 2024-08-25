@@ -16,11 +16,26 @@ const SignContainer = styled.div`
   justify-content: center;
 `;
 
-const IdContainer = styled.div`
+const NameContainer = styled.div`
   font-size: 20px;
   color: black;
   font-family: "Rubik Bubbles", system-ui;
   margin-top: 35px;
+  width: 400px;
+  margin-left: -17px;
+`;
+
+const Name = styled.input`
+  width: 120px;
+  height: 22px;
+  margin-left: 20px;
+`;
+
+const IdContainer = styled.div`
+  font-size: 20px;
+  color: black;
+  font-family: "Rubik Bubbles", system-ui;
+  margin-top: 20px;
   width: 400px;
   margin-left: 20px;
 `;
@@ -37,7 +52,7 @@ const PwContainer = styled.div`
   font-family: "Rubik Bubbles", system-ui;
   width: 400px;
   text-align: left;
-  margin-left: 100px;
+  margin-left: 98px;
 `;
 
 const Password = styled.input`
@@ -57,9 +72,13 @@ const Check = styled.button`
   margin-right: 50px;
 `;
 
-function SignIn() {
+function SignUp() {
   return (
     <SignContainer>
+      <NameContainer>
+        Name
+        <Name type="text" />
+      </NameContainer>
       <IdContainer>
         Id
         <Id type="text" />
@@ -68,9 +87,9 @@ function SignIn() {
         Password
         <Password type="password" />
       </PwContainer>
-      <Check>Sign in</Check>
+      <Check>Sign up</Check>
     </SignContainer>
   );
 }
 
-export default SignIn;
+export default SignUp;

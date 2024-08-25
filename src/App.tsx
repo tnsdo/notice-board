@@ -11,7 +11,8 @@ import {
 import styled from "styled-components";
 
 import HomeBsignup from "./home-bsignup";
-import SignIn from "./signin";
+import SignIn from "./signin.tsx";
+import SignUp from "./signup.tsx";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const AppContent: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomeBsignup />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Display>
   );
