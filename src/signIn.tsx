@@ -1,5 +1,7 @@
 import "./App.css";
 
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
 
 const SignContainer = styled.div`
@@ -35,16 +37,26 @@ const PwContainer = styled.div`
   font-size: 20px;
   color: black;
   font-family: "Rubik Bubbles", system-ui;
-  width: 400px;
+  width: 500px;
   text-align: left;
-  margin-left: 100px;
+  margin-left: 190px;
 `;
 
 const Password = styled.input`
   width: 120px;
   height: 22px;
   margin-top: 20px;
-  margin-left: 15px;
+  margin-left: 18px;
+`;
+
+const TogglePasswordButton = styled.button`
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  margin-top: 25px;
 `;
 
 const Check = styled.button`
@@ -58,6 +70,12 @@ const Check = styled.button`
 `;
 
 function SignIn() {
+  const [showPswd, setShowPswd] = useState<boolean>(false);
+
+  const toggleShowPassword = () => {
+    setShowPswd((prevState) => !prevState);
+  };
+
   return (
     <SignContainer>
       <IdContainer>
@@ -66,7 +84,10 @@ function SignIn() {
       </IdContainer>
       <PwContainer>
         Password
-        <Password type="password" />
+        <Password type={showPswd ? "text" : "password"} />
+        <TogglePasswordButton onClick={toggleShowPassword}>
+          {showPswd ? <FaEyeSlash /> : <FaEye />}
+        </TogglePasswordButton>
       </PwContainer>
       <Check>Sign in</Check>
     </SignContainer>
