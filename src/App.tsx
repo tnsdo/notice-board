@@ -1,45 +1,83 @@
 import "./App.css";
 
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import styled, { CSSProperties } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 
-import ReactLogo from "./assets/react.svg?react";
+import homecat from "./assets/homecat.png";
 
-const ReadTheDocs = styled.p<{
-  $color?: CSSProperties["color"];
-}>`
-  color: ${({ $color }) => $color ?? "red"};
+const Display = styled.div`
+  width: 600px;
+  height: 100vh;
+  position: relative;
+  overflow-y: auto;
+`;
+
+const Header = styled.div`
+  font-family: "Rubik Bubbles", system-ui;
+  text-align: center;
+  font-size: 50px;
+  line-height: 50px;
+  color: black;
+`;
+
+const SignContainer = styled.div`
+  width: 500px;
+  height: 300px;
+  background-color: #f4f4f4;
+  border-radius: 15px;
+  left: 50%;
+  transform: translateX(10%);
+  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Welcome = styled.div`
+  color: black;
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-family: "Rubik Bubbles", system-ui;
+`;
+
+const HomeCat = styled.img`
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: fill;
+  margin-bottom: 20px;
+`;
+
+const Sign = styled.div`
+  width: 500px;
+`;
+
+const SignIn = styled.button`
+  border-color: black;
+  border-radius: 0;
+  background-color: white;
+  margin-right: 20px;
+`;
+
+const SignUp = styled.button`
+  border-color: black;
+  border-radius: 0;
+  background-color: white;
 `;
 
 function App() {
-  const [count, setCount] = useState(0);
-  const { t } = useTranslation("main");
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-          <img src="/src/assets/react.svg" className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <ReadTheDocs $color={"blue"}>
-        {t("title")}
-        <ReactLogo width={16} height={16} />
-      </ReadTheDocs>
-    </div>
+    <Display>
+      <Header>Board</Header>
+      <SignContainer>
+        <Welcome>Welcome!</Welcome>
+        <HomeCat src={homecat} alt="homecat" />
+        <Sign>
+          <SignIn>Sign in</SignIn>
+          <SignUp>Sign up</SignUp>
+        </Sign>
+      </SignContainer>
+    </Display>
   );
 }
 
