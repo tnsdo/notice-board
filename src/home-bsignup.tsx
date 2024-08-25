@@ -8,12 +8,12 @@ import homecat from "./assets/homecat.png";
 import wacat from "./assets/wacat.png";
 
 const SignContainer = styled.div`
-  width: 500px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
   background-color: #f4f4f4;
   border-radius: 15px;
   transform: translateX(10%);
-  margin-top: 150px;
+  margin-top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,33 +29,20 @@ const Welcome = styled.div`
 
 const CatWrapper = styled.div`
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   margin-bottom: 20px;
 `;
 
 const HomeCat = styled.img`
   border-radius: 10%;
-  width: 100px;
-  height: 100px;
-  object-fit: fill;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
   margin-bottom: 20px;
   cursor: pointer;
   z-index: 1;
   position: relative;
-`;
-
-const WaCat = styled.img`
-  border-radius: 10%;
-  width: 100px;
-  height: 100px;
-  object-fit: fill;
-  margin-bottom: 20px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  opacity: 0;
 `;
 
 const Sign = styled.div`
@@ -81,20 +68,16 @@ const SignUp = styled.button`
 
 function HomeBsignup() {
   const navigate = useNavigate();
-  const [isWaCatVisible, setWaCatVisible] = useState(false);
+  const [isWaCat, setIsWaCat] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
-  const handleHomeCatClick = () => {
-    setWaCatVisible(true);
+  const handleCatClick = () => {
+    setIsWaCat(true);
+    setClickCount((prevCount) => prevCount + 1);
+    setTimeout(() => {
+      setIsWaCat(false);
+    }, 100); // 0.1초 후에 다시 homecat으로 변경
   };
-
-  useEffect(() => {
-    if (isWaCatVisible) {
-      const timer = setTimeout(() => {
-        setWaCatVisible(false);
-      }, 200); // Show wacat for 200ms
-      return () => clearTimeout(timer);
-    }
-  }, [isWaCatVisible]);
 
   const handSignInClick = () => {
     navigate("/signin");
@@ -106,9 +89,13 @@ function HomeBsignup() {
     <SignContainer>
       <Welcome>Welcome!</Welcome>
       <CatWrapper>
-        {isWaCatVisible && <WaCat src={wacat} alt="wacat" />}
-        <HomeCat src={homecat} alt="homecat" onClick={handleHomeCatClick} />
+        <HomeCat 
+          src={isWaCat ? wacat : homecat} 
+          alt={isWaCat ? "wacat" : "homecat"} 
+          onClick={handleCatClick} 
+        />
       </CatWrapper>
+      <clickCount>클릭 횟수: {clickCount}</clickCount>
       <Sign>
         <SignIn onClick={handSignInClick}>Sign in</SignIn>
         <SignUp onClick={handSignUpClick}>Sign up</SignUp>

@@ -11,7 +11,7 @@ import {
 import styled from "styled-components";
 
 import HomeBsignup from "./home-bsignup";
-import SignIn from "./signin.tsx";
+import SignIn from "./signIn";
 import SignUp from "./signup.tsx";
 
 const queryClient = new QueryClient();
