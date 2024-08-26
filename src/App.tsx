@@ -1,5 +1,3 @@
-import "./App.css";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import {
@@ -10,9 +8,9 @@ import {
 } from "react-router-dom";
 import styled from "styled-components";
 
-import HomeBsignup from "./home-bsignup";
-import SignIn from "./signin.tsx";
-import SignUp from "./signup.tsx";
+import HomeBsignup from "./Pages/Home/first page.tsx";
+import SignIn from "./Pages/Sign in/signin.tsx";
+import SignUp from "./Pages/Sign in/signup.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,11 +22,12 @@ const Display = styled.div`
 `;
 
 const Header = styled.div`
-  font-family: "Rubik Bubbles", system-ui;
+  font-family: -apple-system-headline, BlinkMacSystemFont, sans-serif;
   text-align: center;
   font-size: 50px;
   line-height: 50px;
   color: black;
+  margin-top: 20px;
 `;
 
 const AppContent: React.FC = () => {

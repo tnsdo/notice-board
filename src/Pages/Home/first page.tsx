@@ -1,10 +1,11 @@
-import "./App.css";
+import "../../App.css";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import homecat from "./assets/homecat.png";
+import homecat from "../../assets/homecat.png";
+import wacat from "../../assets/wacat.png";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -23,7 +24,15 @@ const Welcome = styled.div`
   color: black;
   font-size: 30px;
   margin-bottom: 20px;
-  font-family: "Rubik Bubbles", system-ui;
+`;
+
+const CatWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
 `;
 
 const HomeCat = styled.img`
@@ -33,47 +42,42 @@ const HomeCat = styled.img`
   object-fit: fill;
   margin-bottom: 20px;
   cursor: pointer;
-  z-index: 1;
-  position: relative;
+  transition: transform 0.1s;
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 const Sign = styled.div`
-  width: 500px;
+  margin-top: 10px;
 `;
 
 const SignIn = styled.button`
   border-color: black;
-  border-radius: 0;
+  border-radius: 10%;
   background-color: white;
   margin-right: 20px;
-  font-family: "Rubik Bubbles", system-ui;
   border-radius: 10%;
 `;
 
 const SignUp = styled.button`
-  font-family: "Rubik Bubbles", system-ui;
   border-color: black;
-  border-radius: 0;
+  border-radius: 10%;
   background-color: white;
   border-radius: 10%;
 `;
 
 function HomeBsignup() {
   const navigate = useNavigate();
-  const [isWaCatVisible, setWaCatVisible] = useState(false);
-
-  const handleHomeCatClick = () => {
-    setWaCatVisible(true);
-  };
+  const [catStates, setCatStates] = useState(Array(1).fill(false));
 
   useEffect(() => {
-    if (isWaCatVisible) {
-      const timer = setTimeout(() => {
-        setWaCatVisible(false);
-      }, 200); // Show wacat for 200ms
-      return () => clearTimeout(timer);
-    }
-  }, [isWaCatVisible]);
+    setCatStates((prevStates) => prevStates.map(() => true));
+    setTimeout(() => {
+      setCatStates((prevStates) => prevStates.map(() => false));
+    }, 100);
+  }, []);
 
   const handSignInClick = () => {
     navigate("/signin");
@@ -84,7 +88,15 @@ function HomeBsignup() {
   return (
     <SignContainer>
       <Welcome>Welcome!</Welcome>
-      <HomeCat src={homecat} alt="homecat" onClick={handleHomeCatClick} />
+      <CatWrapper>
+        {catStates.map((isWaCat, index) => (
+          <HomeCat
+            key={index}
+            src={isWaCat ? wacat : homecat}
+            alt={isWaCat ? "wacat" : "homecat"}
+          />
+        ))}
+      </CatWrapper>
       <Sign>
         <SignIn onClick={handSignInClick}>Sign in</SignIn>
         <SignUp onClick={handSignUpClick}>Sign up</SignUp>

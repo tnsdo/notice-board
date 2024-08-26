@@ -1,5 +1,3 @@
-import "./App.css";
-
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
@@ -22,15 +20,15 @@ const IdContainer = styled.div`
   font-size: 20px;
   color: black;
   font-family: "Rubik Bubbles", system-ui;
-  margin-top: 35px;
+  padding-top: 35px;
+  padding-left: 255px;
   width: 400px;
-  margin-left: 20px;
 `;
 
 const Id = styled.input`
   width: 120px;
   height: 22px;
-  margin-left: 20px;
+  margin-left: 18px;
 `;
 
 const PwContainer = styled.div`
@@ -39,7 +37,7 @@ const PwContainer = styled.div`
   font-family: "Rubik Bubbles", system-ui;
   width: 500px;
   text-align: left;
-  margin-left: 190px;
+  padding-left: 190px;
 `;
 
 const Password = styled.input`
@@ -56,15 +54,16 @@ const TogglePasswordButton = styled.button`
   cursor: pointer;
   padding: 0;
   margin-left: 10px;
-  margin-top: 25px;
+  padding-top: 25px;
 `;
 
 const Check = styled.button`
   width: 100px;
+  text-align: center;
   font-size: 15px;
   border-color: black;
   font-family: "Rubik Bubbles", system-ui;
-  margin-top: 30px;
+  margin-top: 50px;
   margin-left: auto;
   margin-right: 50px;
 `;
