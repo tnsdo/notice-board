@@ -7,8 +7,6 @@ const SignContainer = styled.div`
   height: 300px;
   background-color: #f4f4f4;
   border-radius: 15px;
-  left: 50%;
-  transform: translateX(10%);
   margin-top: 150px;
   display: flex;
   flex-direction: column;
@@ -19,10 +17,9 @@ const SignContainer = styled.div`
 const NameContainer = styled.div`
   font-size: 20px;
   color: black;
-  font-family: "Rubik Bubbles", system-ui;
-  margin-top: 35px;
+  margin-top: 20px;
   width: 400px;
-  margin-left: -17px;
+  margin-right: 25px;
 `;
 
 const Name = styled.input`
@@ -31,16 +28,15 @@ const Name = styled.input`
   margin-left: 20px;
 `;
 
-const IdContainer = styled.div`
+const EmailContainer = styled.div`
   font-size: 20px;
   color: black;
-  font-family: "Rubik Bubbles", system-ui;
   margin-top: 20px;
   width: 400px;
-  margin-left: 20px;
+  margin-right: 25px;
 `;
 
-const Id = styled.input`
+const Email = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
@@ -49,10 +45,8 @@ const Id = styled.input`
 const PwContainer = styled.div`
   font-size: 20px;
   color: black;
-  font-family: "Rubik Bubbles", system-ui;
   width: 400px;
-  text-align: left;
-  margin-left: 98px;
+  margin-right: 48px;
 `;
 
 const Password = styled.input`
@@ -66,10 +60,10 @@ const Check = styled.button`
   width: 100px;
   font-size: 15px;
   border-color: black;
-  font-family: "Rubik Bubbles", system-ui;
   margin-top: 30px;
   margin-left: auto;
   margin-right: 50px;
+  border-radius: 0;
 `;
 
 function SignUp() {
@@ -79,10 +73,10 @@ function SignUp() {
         Name
         <Name type="text" />
       </NameContainer>
-      <IdContainer>
-        Id
-        <Id type="text" />
-      </IdContainer>
+      <EmailContainer>
+        E-mail
+        <Email type="text" />
+      </EmailContainer>
       <PwContainer>
         Password
         <Password type="password" />

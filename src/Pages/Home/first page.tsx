@@ -1,6 +1,6 @@
 import "../../App.css";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -14,6 +14,7 @@ const SignContainer = styled.div`
   border-radius: 15px;
   transform: translateX(10%);
   margin-top: 150px;
+  margin-right: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,10 +38,10 @@ const CatWrapper = styled.div`
 
 const HomeCat = styled.img`
   border-radius: 10%;
-  width: 100px;
-  height: 100px;
-  object-fit: fill;
-  margin-bottom: 20px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  margin: 5px;
   cursor: pointer;
   transition: transform 0.1s;
 
@@ -55,29 +56,29 @@ const Sign = styled.div`
 
 const SignIn = styled.button`
   border-color: black;
-  border-radius: 10%;
   background-color: white;
   margin-right: 20px;
-  border-radius: 10%;
+  border-radius: 0;
 `;
 
 const SignUp = styled.button`
   border-color: black;
-  border-radius: 10%;
   background-color: white;
-  border-radius: 10%;
+  border-radius: 0;
 `;
 
 function HomeBsignup() {
   const navigate = useNavigate();
-  const [catStates, setCatStates] = useState(Array(1).fill(false));
+  const [isWaCat, setisWaCat] = useState(false);
 
-  useEffect(() => {
-    setCatStates((prevStates) => prevStates.map(() => true));
-    setTimeout(() => {
-      setCatStates((prevStates) => prevStates.map(() => false));
+  const handleCatClick = () => {
+    setisWaCat(true);
+    const timer = setTimeout(() => {
+      setisWaCat(false);
     }, 100);
-  }, []);
+
+    return () => clearTimeout(timer);
+  };
 
   const handSignInClick = () => {
     navigate("/signin");
@@ -89,13 +90,11 @@ function HomeBsignup() {
     <SignContainer>
       <Welcome>Welcome!</Welcome>
       <CatWrapper>
-        {catStates.map((isWaCat, index) => (
-          <HomeCat
-            key={index}
-            src={isWaCat ? wacat : homecat}
-            alt={isWaCat ? "wacat" : "homecat"}
-          />
-        ))}
+        <HomeCat
+          src={isWaCat ? wacat : homecat}
+          alt={isWaCat ? "wacat" : "homecat"}
+          onClick={handleCatClick}
+        />
       </CatWrapper>
       <Sign>
         <SignIn onClick={handSignInClick}>Sign in</SignIn>

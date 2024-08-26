@@ -7,8 +7,6 @@ const SignContainer = styled.div`
   height: 300px;
   background-color: #f4f4f4;
   border-radius: 15px;
-  left: 50%;
-  transform: translateX(10%);
   margin-top: 150px;
   display: flex;
   flex-direction: column;
@@ -19,9 +17,8 @@ const SignContainer = styled.div`
 const IdContainer = styled.div`
   font-size: 20px;
   color: black;
-  font-family: "Rubik Bubbles", system-ui;
   padding-top: 35px;
-  padding-left: 255px;
+  padding-right: 20px;
   width: 400px;
 `;
 
@@ -34,10 +31,9 @@ const Id = styled.input`
 const PwContainer = styled.div`
   font-size: 20px;
   color: black;
-  font-family: "Rubik Bubbles", system-ui;
   width: 500px;
   text-align: left;
-  padding-left: 190px;
+  padding-left: 183px;
 `;
 
 const Password = styled.input`
@@ -57,15 +53,15 @@ const TogglePasswordButton = styled.button`
   padding-top: 25px;
 `;
 
-const Check = styled.button`
+const Sign = styled.button`
   width: 100px;
   text-align: center;
   font-size: 15px;
   border-color: black;
-  font-family: "Rubik Bubbles", system-ui;
   margin-top: 50px;
   margin-left: auto;
   margin-right: 50px;
+  border-radius: 0;
 `;
 
 function SignIn() {
@@ -88,7 +84,7 @@ function SignIn() {
           {showPswd ? <FaEyeSlash /> : <FaEye />}
         </TogglePasswordButton>
       </PwContainer>
-      <Check>Sign in</Check>
+      <Sign>Sign in</Sign>
     </SignContainer>
   );
 }

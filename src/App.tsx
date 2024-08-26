@@ -1,3 +1,5 @@
+import "./App.css";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import {
@@ -9,25 +11,27 @@ import {
 import styled from "styled-components";
 
 import HomeBsignup from "./Pages/Home/first page.tsx";
-import SignIn from "./Pages/Sign in/signin.tsx";
-import SignUp from "./Pages/Sign in/signup.tsx";
+import SignIn from "./Pages/Sign/signin.tsx";
+import SignUp from "./Pages/Sign/signup.tsx";
 
 const queryClient = new QueryClient();
 
 const Display = styled.div`
   width: 600px;
-  height: 100vh;
-  position: relative;
-  overflow-y: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Header = styled.div`
-  font-family: -apple-system-headline, BlinkMacSystemFont, sans-serif;
   text-align: center;
   font-size: 50px;
+  font-weight: 400;
   line-height: 50px;
   color: black;
-  margin-top: 20px;
 `;
 
 const AppContent: React.FC = () => {
