@@ -19,10 +19,10 @@ const NameContainer = styled.div`
   color: black;
   margin-top: 20px;
   width: 400px;
-  margin-right: 25px;
+  margin-right: 60px;
 `;
 
-const Name = styled.input`
+const NickName = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
@@ -70,8 +70,8 @@ function SignUp() {
   return (
     <SignContainer>
       <NameContainer>
-        Name
-        <Name type="text" />
+        NickName
+        <NickName type="text" />
       </NameContainer>
       <EmailContainer>
         E-mail
