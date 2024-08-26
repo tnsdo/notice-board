@@ -24,6 +24,7 @@ const SignContainer = styled.div`
 const Welcome = styled.div`
   color: black;
   font-size: 30px;
+  font-weight: 400;
   margin-bottom: 20px;
 `;
 

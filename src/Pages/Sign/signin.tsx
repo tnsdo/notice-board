@@ -14,15 +14,15 @@ const SignContainer = styled.div`
   justify-content: center;
 `;
 
-const IdContainer = styled.div`
+const EmailContainer = styled.div`
   font-size: 20px;
   color: black;
   padding-top: 35px;
-  padding-right: 20px;
+  padding-right: 60px;
   width: 400px;
 `;
 
-const Id = styled.input`
+const Email = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 18px;
@@ -73,10 +73,10 @@ function SignIn() {
 
   return (
     <SignContainer>
-      <IdContainer>
-        Id
-        <Id type="text" />
-      </IdContainer>
+      <EmailContainer>
+        E-mail
+        <Email type="text" />
+      </EmailContainer>
       <PwContainer>
         Password
         <Password type={showPswd ? "text" : "password"} />
