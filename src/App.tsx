@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -13,6 +13,7 @@ import styled from "styled-components";
 import HomeBsignup from "./Pages/Home/first page.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
+import { ThemeContext } from "./Pages/Theme/themeContext";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const Header = styled.div`
   font-weight: 600;
   line-height: 50px;
   color: black;
+  color: #000000;
 `;
 
 const AppContent: React.FC = () => {
@@ -41,15 +43,19 @@ const AppContent: React.FC = () => {
     navigate("/");
   };
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   return (
-    <Display>
-      <Header onClick={handHeaderClick}>Board</Header>
-      <Routes>
-        <Route path="/" element={<HomeBsignup />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
-    </Display>
+    <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+      <Display>
+        <Header onClick={handHeaderClick}>Board</Header>
+        <Routes>
+          <Route path="/" element={<HomeBsignup />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      </Display>
+    </ThemeContext.Provider>
   );
 };
 
