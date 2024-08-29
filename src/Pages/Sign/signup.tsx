@@ -1,11 +1,9 @@
 import "../../App.css";
 
-import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styled from "styled-components";
 
-import { useAuth } from "../../Pages/Context/userContext";
+import api from "../../api/axios";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -31,6 +29,7 @@ const NickName = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
+  font-size: 15px;
 `;
 
 const EmailContainer = styled.div`
@@ -45,6 +44,7 @@ const Email = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
+  font-size: 15px;
 `;
 
 const PwContainer = styled.div`
@@ -59,6 +59,7 @@ const Password = styled.input`
   height: 22px;
   margin-top: 20px;
   margin-left: 15px;
+  font-size: 15px;
 `;
 
 const Check = styled.button`
@@ -75,34 +76,29 @@ function SignUp() {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { signIn } = useAuth();
 
   const handleSignUp = async () => {
-    if (!nickname || !email || !password) {
-      alert("Enter all fields.");
-      return;
-    }
-
     try {
-      await axios.post(
-        "https://api.2024.newbies.gistory.me/auth/register",
-        { nickname, email, password },
-        { headers: { "Content-Type": "application/json" } },
-      );
+      const response = await api.post("/auth/register", {
+        nickname,
+        email,
+        password,
+      });
 
-      localStorage.setItem("nickname", nickname);
-      localStorage.setItem("email", email);
-      localStorage.setItem("password", password);
+      if (response.status === 200) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            nickname,
+            email,
+          }),
+        );
 
-      alert("Sign up success!");
-
-      await signIn(email, password);
-
-      navigate("/home");
+        alert("Sign up success!");
+      }
     } catch (error) {
-      console.error("Failed to sign up:", error);
-      alert("Failed to sign up. Please try again.");
+      console.error("Sign up error:", error);
+      alert("Sign up error!");
     }
   };
 

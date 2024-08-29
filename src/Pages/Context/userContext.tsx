@@ -1,6 +1,5 @@
+import axios from "axios";
 import React, { createContext, useCallback, useContext, useState } from "react";
-
-import api from "../../api/axios";
 
 interface AuthContextType {
   email: string;
@@ -29,7 +28,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<object>> = ({
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await axios.post("/api/auth/login", { email, password });
       const { accessToken, refreshToken, expiresIn } = response.data;
 
       setEmail(email);

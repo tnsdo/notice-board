@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
 
+import api from "../../api/axios";
 import { useAuth } from "../../Pages/Context/userContext";
 
 const SignContainer = styled.div`
@@ -77,10 +78,18 @@ function SignIn() {
 
   const handleSignIn = async () => {
     try {
-      await signIn(email, password);
-      console.log("Sign in success!");
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        await signIn(email, password);
+        console.log("Sign in success!");
+      }
     } catch (error) {
-      console.error("Sign in failed:", error);
+      console.error("Sign in error:", error);
+      alert("Sign in error occurred.");
     }
   };
 
