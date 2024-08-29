@@ -1,6 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styled from "styled-components";
+
+import { useAuth } from "../../Pages/Context/userContext";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -26,6 +28,7 @@ const Email = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 18px;
+  font-size: 15px;
 `;
 
 const PwContainer = styled.div`
@@ -41,6 +44,7 @@ const Password = styled.input`
   height: 22px;
   margin-top: 20px;
   margin-left: 18px;
+  font-size: 15px;
 `;
 
 const TogglePasswordButton = styled.button`
@@ -59,7 +63,6 @@ const Sign = styled.button`
   text-align: center;
   font-size: 15px;
   border-color: ${({ theme }) => theme.buttonBorder};
-  border-width: 1px;
   margin-top: 50px;
   margin-left: auto;
   margin-right: 50px;
@@ -68,6 +71,18 @@ const Sign = styled.button`
 
 function SignIn() {
   const [showPswd, setShowPswd] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { signIn } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await signIn(email, password);
+      console.log("Sign in success!");
+    } catch (error) {
+      console.error("Sign in failed:", error);
+    }
+  };
 
   const toggleShowPassword = () => {
     setShowPswd((prevState) => !prevState);
@@ -77,16 +92,24 @@ function SignIn() {
     <SignContainer>
       <EmailContainer>
         E-mail
-        <Email type="text" />
+        <Email
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </EmailContainer>
       <PwContainer>
         Password
-        <Password type={showPswd ? "text" : "password"} />
+        <Password
+          type={showPswd ? "text" : "password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <TogglePasswordButton onClick={toggleShowPassword}>
           {showPswd ? <FaEyeSlash /> : <FaEye />}
         </TogglePasswordButton>
       </PwContainer>
-      <Sign>Sign in</Sign>
+      <Sign onClick={handleSignIn}>Sign in</Sign>
     </SignContainer>
   );
 }

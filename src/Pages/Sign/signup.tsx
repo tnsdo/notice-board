@@ -1,6 +1,11 @@
 import "../../App.css";
 
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+import { useAuth } from "../../Pages/Context/userContext";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -67,21 +72,67 @@ const Check = styled.button`
 `;
 
 function SignUp() {
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
+
+  const handleSignUp = async () => {
+    if (!nickname || !email || !password) {
+      alert("Enter all fields.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        "https://api.2024.newbies.gistory.me/auth/register",
+        { nickname, email, password },
+        { headers: { "Content-Type": "application/json" } },
+      );
+
+      localStorage.setItem("nickname", nickname);
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
+
+      alert("Sign up success!");
+
+      await signIn(email, password);
+
+      navigate("/home");
+    } catch (error) {
+      console.error("Failed to sign up:", error);
+      alert("Failed to sign up. Please try again.");
+    }
+  };
+
   return (
     <SignContainer>
       <NameContainer>
         NickName
-        <NickName type="text" />
+        <NickName
+          type="text"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
       </NameContainer>
       <EmailContainer>
         E-mail
-        <Email type="text" />
+        <Email
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </EmailContainer>
       <PwContainer>
         Password
-        <Password type="password" />
+        <Password
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </PwContainer>
-      <Check>Sign up</Check>
+      <Check onClick={handleSignUp}>Sign up</Check>
     </SignContainer>
   );
 }

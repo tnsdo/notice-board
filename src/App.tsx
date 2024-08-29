@@ -11,7 +11,9 @@ import {
 import styled, { useTheme } from "styled-components";
 
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
-import HomeBsignup from "./Pages/Home/first page.tsx";
+import { AuthProvider } from "./Pages/Context/userContext.tsx"; // AuthProvider를 import
+import OnBoarding from "./Pages/Home/onBoarding.tsx";
+import Home from "./Pages/Home/page.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
@@ -52,7 +54,9 @@ const AppContent: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <AppContentWithTheme handleHeaderClick={handleHeaderClick} />
+      <AuthProvider>
+        <AppContentWithTheme handleHeaderClick={handleHeaderClick} />
+      </AuthProvider>
     </ThemeProvider>
   );
 };
@@ -69,9 +73,10 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
       <Display>
         <Header onClick={handleHeaderClick}>Board</Header>
         <Routes>
-          <Route path="/" element={<HomeBsignup />} />
+          <Route path="/" element={<OnBoarding />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Display>
     </Background>
