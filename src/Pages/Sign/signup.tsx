@@ -5,7 +5,7 @@ import styled from "styled-components";
 const SignContainer = styled.div`
   width: 500px;
   height: 300px;
-  background-color: #f4f4f4;
+  background-color: ${({ theme }) => theme.signContainer};
   border-radius: 15px;
   margin-top: 150px;
   display: flex;
@@ -16,7 +16,7 @@ const SignContainer = styled.div`
 
 const NameContainer = styled.div`
   font-size: 20px;
-  color: black;
+  color: ${({ theme }) => theme.text};
   margin-top: 20px;
   width: 400px;
   margin-right: 60px;
@@ -30,7 +30,7 @@ const NickName = styled.input`
 
 const EmailContainer = styled.div`
   font-size: 20px;
-  color: black;
+  color: ${({ theme }) => theme.text};
   margin-top: 20px;
   width: 400px;
   margin-right: 25px;
@@ -44,7 +44,7 @@ const Email = styled.input`
 
 const PwContainer = styled.div`
   font-size: 20px;
-  color: black;
+  color: ${({ theme }) => theme.text};
   width: 400px;
   margin-right: 48px;
 `;
@@ -59,7 +59,7 @@ const Password = styled.input`
 const Check = styled.button`
   width: 100px;
   font-size: 15px;
-  border-color: black;
+  border-color: ${({ theme }) => theme.buttonBorder};
   margin-top: 30px;
   margin-left: auto;
   margin-right: 50px;

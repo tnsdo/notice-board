@@ -1,21 +1,29 @@
 import "./App.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   useNavigate,
 } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
+import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
 import HomeBsignup from "./Pages/Home/first page.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
-import { ThemeContext } from "./Pages/Theme/themeContext";
+import { GlobalStyle } from "./Pages/Theme/global-style.ts";
+import DarkModeToggle from "./Pages/Theme/toggle.tsx";
 
 const queryClient = new QueryClient();
+
+const Background = styled.div`
+  background-color: ${({ theme }) => theme.background};
+  height: 100vh;
+  width: 100vw;
+`;
 
 const Display = styled.div`
   width: 600px;
@@ -32,30 +40,41 @@ const Header = styled.div`
   font-size: 50px;
   font-weight: 600;
   line-height: 50px;
-  color: black;
-  color: #000000;
+  color: ${({ theme }) => theme.text};
 `;
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
 
-  const handHeaderClick = () => {
+  const handleHeaderClick = () => {
     navigate("/");
   };
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  return (
+    <ThemeProvider>
+      <AppContentWithTheme handleHeaderClick={handleHeaderClick} />
+    </ThemeProvider>
+  );
+};
+
+const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
+  handleHeaderClick,
+}) => {
+  const { theme } = useTheme();
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+    <Background theme={theme}>
+      <GlobalStyle theme={theme} />
+      <DarkModeToggle />
       <Display>
-        <Header onClick={handHeaderClick}>Board</Header>
+        <Header onClick={handleHeaderClick}>Board</Header>
         <Routes>
           <Route path="/" element={<HomeBsignup />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>
       </Display>
-    </ThemeContext.Provider>
+    </Background>
   );
 };
 

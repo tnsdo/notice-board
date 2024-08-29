@@ -10,7 +10,7 @@ import wacat from "../../assets/wacat.png";
 const SignContainer = styled.div`
   width: 500px;
   height: 300px;
-  background-color: #f4f4f4;
+  background-color: ${({ theme }) => theme.signContainer};
   border-radius: 15px;
   transform: translateX(10%);
   margin-top: 150px;
@@ -22,7 +22,7 @@ const SignContainer = styled.div`
   position: relative;
 `;
 const Welcome = styled.div`
-  color: black;
+  color: ${({ theme }) => theme.text};
   font-size: 30px;
   font-weight: 400;
   margin-bottom: 20px;
@@ -56,15 +56,17 @@ const Sign = styled.div`
 `;
 
 const SignIn = styled.button`
-  border-color: black;
-  background-color: white;
+  border-color: ${({ theme }) => theme.buttonBorder};
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.text};
   margin-right: 20px;
   border-radius: 0;
 `;
 
 const SignUp = styled.button`
-  border-color: black;
-  background-color: white;
+  border-color: ${({ theme }) => theme.buttonBorder};
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.text};
   border-radius: 0;
 `;
 

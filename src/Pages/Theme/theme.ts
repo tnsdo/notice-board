@@ -1,18 +1,34 @@
-import * as styledComponents from "styled-components";
-import { ThemedStyledComponentsModule } from "styled-components";
+export interface Theme {
+  background: string;
+  text: string;
+  signContainer: string;
+  buttonBorder: string;
+  buttonBackground: string;
+  toggleButton: string;
+  toggleText: string;
+}
 
-export const light = {
-  bakcground: "#ffffff",
+export const lightTheme: Theme = {
+  background: "#ffffff",
   text: "#000000",
   signContainer: "#f4f4f4",
+  buttonBorder: "#000000",
+  buttonBackground: "#ffffff",
+  toggleButton: "#e9e9ea",
+  toggleText: "#000000",
 };
 
-export const dark = {
-  bakcground: "#000000",
+export const darkTheme: Theme = {
+  background: "#000000",
   text: "#ffffff",
-  signContainer: "#494949",
+  signContainer: "rgb(28,28,30)",
+  buttonBorder: "#ffffff",
+  buttonBackground: "#000000",
+  toggleButton: "#24c64c",
+  toggleText: "#ffffff",
 };
 
-export type Theme = typeof light;
-export const { default: styled } =
-  styledComponents as any as ThemedStyledComponentsModule<Theme>;
+export const theme = {
+  lightTheme,
+  darkTheme,
+};
