@@ -89,7 +89,7 @@ function SignIn() {
       }
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Sign in error occurred.");
+      alert("Sign in error!");
     }
   };
 
