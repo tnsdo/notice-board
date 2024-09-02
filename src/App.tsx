@@ -11,11 +11,16 @@ import {
 import styled, { useTheme } from "styled-components";
 
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
-import HomeBsignup from "./Pages/Home/first page.tsx";
+import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
+import Board from "./Pages/Home/board.tsx";
+import OnBoarding from "./Pages/Home/onBoarding.tsx";
+import Home from "./Pages/Home/page.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
 import DarkModeToggle from "./Pages/Theme/toggle.tsx";
+import MyPage from "./Pages/User/page.tsx";
+import WriteBoard from "./Pages/write/page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +31,7 @@ const Background = styled.div`
 `;
 
 const Display = styled.div`
-  width: 600px;
+  width: 100%;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -45,9 +50,14 @@ const Header = styled.div`
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleHeaderClick = () => {
-    navigate("/");
+    if (isAuthenticated) {
+      navigate("/home");
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -69,9 +79,13 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
       <Display>
         <Header onClick={handleHeaderClick}>Board</Header>
         <Routes>
-          <Route path="/" element={<HomeBsignup />} />
+          <Route path="/" element={<OnBoarding />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/board/:id" element={<Board />} />
+          <Route path="/posts" element={<WriteBoard />} />
+          <Route path="/user" element={<MyPage />} />
         </Routes>
       </Display>
     </Background>
@@ -81,9 +95,13 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <AppContent />
-      </Router>
+      <AuthProvider>
+        <Router>
+          <ThemeProvider>
+            <AppContent />
+          </ThemeProvider>
+        </Router>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

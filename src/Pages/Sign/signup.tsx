@@ -1,6 +1,9 @@
 import "../../App.css";
 
+import { useState } from "react";
 import styled from "styled-components";
+
+import api from "../../api/axios";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -26,6 +29,7 @@ const NickName = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
+  font-size: 15px;
 `;
 
 const EmailContainer = styled.div`
@@ -40,6 +44,7 @@ const Email = styled.input`
   width: 120px;
   height: 22px;
   margin-left: 20px;
+  font-size: 15px;
 `;
 
 const PwContainer = styled.div`
@@ -54,6 +59,7 @@ const Password = styled.input`
   height: 22px;
   margin-top: 20px;
   margin-left: 15px;
+  font-size: 15px;
 `;
 
 const Check = styled.button`
@@ -67,21 +73,62 @@ const Check = styled.button`
 `;
 
 function SignUp() {
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = async () => {
+    try {
+      const response = await api.post("/auth/register", {
+        nickname,
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            nickname,
+            email,
+          }),
+        );
+
+        alert("Sign up success!");
+      }
+    } catch (error) {
+      console.error("Sign up error:", error);
+      alert("Sign up error!");
+    }
+  };
+
   return (
     <SignContainer>
       <NameContainer>
         NickName
-        <NickName type="text" />
+        <NickName
+          type="text"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
       </NameContainer>
       <EmailContainer>
         E-mail
-        <Email type="text" />
+        <Email
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </EmailContainer>
       <PwContainer>
         Password
-        <Password type="password" />
+        <Password
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </PwContainer>
-      <Check>Sign up</Check>
+      <Check onClick={handleSignUp}>Sign up</Check>
     </SignContainer>
   );
 }

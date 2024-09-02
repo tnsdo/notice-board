@@ -8,7 +8,7 @@ const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
   bottom: 4%;
-  left: 13%;
+  left: 10%;
   transform: translateX(-50%);
 `;
 
