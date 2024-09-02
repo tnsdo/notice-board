@@ -80,11 +80,33 @@ const Post = styled.button`
   transform: translateX(400%);
 `;
 
+const ImageInput = styled.input`
+  margin-top: 10px;
+`;
+
+const ImagePreviewContainer = styled.div`
+  margin-top: 10px;
+  width: 500px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid #ddd;
+`;
+
+const ImagePreview = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+`;
+
 const WriteBoard: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [userNickname, setUserNickname] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const getUserFromLocalStorage = () => {
@@ -98,20 +120,40 @@ const WriteBoard: React.FC = () => {
     getUserFromLocalStorage();
   }, []);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreviewUrl(null);
+    }
+  };
+
   const handlePost = async () => {
     const tagArray = tags
       .split(",")
       .map((tag) => tag.trim())
       .filter((tag) => tag !== "");
 
-    const postData = {
-      title: title,
-      body: content,
-      tags: tagArray,
-    };
+    const postData = new FormData();
+    postData.append("title", title);
+    postData.append("body", content);
+    postData.append("tags", JSON.stringify(tagArray));
+    if (image) {
+      postData.append("image", image);
+    }
 
     try {
-      const response = await api.post("/posts", postData);
+      const response = await api.post("/posts", postData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 200 || response.status === 201) {
         console.log("Post Uploaded!");
@@ -143,8 +185,14 @@ const WriteBoard: React.FC = () => {
         type="text"
         placeholder="Write Tag Here(devide by comma)"
         value={tags}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => setTags(e.target.value)}
       />
+      <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
+      {imagePreviewUrl && (
+        <ImagePreviewContainer>
+          <ImagePreview src={imagePreviewUrl} alt="Image Preview" />
+        </ImagePreviewContainer>
+      )}
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>
   );

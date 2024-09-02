@@ -87,12 +87,10 @@ function SignIn() {
 
       if (response.status === 200) {
         await signIn(email, password);
-        console.log("Sign in success!");
         navigate("/home");
       }
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Sign in error!");
     }
   };
 

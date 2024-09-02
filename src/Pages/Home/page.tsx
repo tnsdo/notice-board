@@ -14,8 +14,9 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 500px;
   height: 30px;
   margin: 10px;
 `;
@@ -25,7 +26,6 @@ const MyPage = styled.div`
   font-weight: 500;
   padding: 10px;
   color: ${({ theme }) => theme.text};
-  margin-left: 30px;
 `;
 
 const SignOut = styled.div`
@@ -33,7 +33,6 @@ const SignOut = styled.div`
   font-weight: 500;
   padding: 10px;
   color: ${({ theme }) => theme.text};
-  margin-left: 10px;
 `;
 
 const WriteBoard = styled.button`
@@ -161,10 +160,14 @@ function Home() {
     navigate("/posts");
   };
 
+  const handleMyPage = () => {
+    navigate("/user");
+  };
+
   return (
     <Container>
       <Header>
-        <MyPage>My Page</MyPage>
+        <MyPage onClick={handleMyPage}>My Page</MyPage>
         <SignOut onClick={handleSignOut}>Sign Out</SignOut>
       </Header>
       {posts.list.length > 0 ? (

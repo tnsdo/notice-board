@@ -19,6 +19,7 @@ import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
 import DarkModeToggle from "./Pages/Theme/toggle.tsx";
+import MyPage from "./Pages/User/page.tsx";
 import WriteBoard from "./Pages/write/page.tsx";
 
 const queryClient = new QueryClient();
@@ -84,6 +85,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/home" element={<Home />} />
           <Route path="/board/:id" element={<Board />} />
           <Route path="/posts" element={<WriteBoard />} />
+          <Route path="/user" element={<MyPage />} />
         </Routes>
       </Display>
     </Background>
