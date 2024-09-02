@@ -11,7 +11,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div`
-  font-family: "Pretendard";
+  color: ${({ theme }) => theme.text};
   font-size: 26px;
   font-weight: 600;
   line-height: 30px;
@@ -20,7 +20,7 @@ const Title = styled.div`
 `;
 
 const Body = styled.div`
-  font-family: "Pretendard";
+  color: ${({ theme }) => theme.text};
   font-size: 16px;
   font-weight: 400;
   line-height: 27px;
@@ -28,12 +28,11 @@ const Body = styled.div`
 `;
 
 const UserId = styled.div`
-  font-family: "Pretendard";
   font-size: 16px;
   font-weight: 400;
   line-height: 27px;
   text-align: left;
-  color: #878787;
+  color: ${({ theme }) => theme.boardItem};
   padding-bottom: 10px;
 `;
 

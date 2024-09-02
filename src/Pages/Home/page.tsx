@@ -5,7 +5,7 @@ import styled from "styled-components";
 import api from "../../api/axios";
 
 const BoardItem = styled(Link)`
-  background-color: #f4f4f4;
+  background-color: ${({ theme }) => theme.signContainer};
   height: auto;
   height: 80px;
   width: 500px;
@@ -24,7 +24,7 @@ const BoardTitle = styled.div`
   font-weight: 600;
   line-height: 15px;
   text-align: left;
-  color: black;
+  color: ${({ theme }) => theme.text};
   margin-left: 20px;
   margin-right: 9px;
   padding-top: 20px;
@@ -35,7 +35,7 @@ const BoardBody = styled.div`
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: black;
+  color: ${({ theme }) => theme.text};
   margin-left: 20px;
   margin-right: 9px;
   padding-top: 8px;
@@ -46,7 +46,7 @@ const User = styled.div`
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: black;
+  color: ${({ theme }) => theme.text};
   text-align: right;
   margin-right: 10px;
 `;
@@ -78,7 +78,7 @@ export interface Post {
   }[];
 }
 
-export interface PostResponse {
+interface PostResponse {
   count: number;
   list: Post[];
 }
