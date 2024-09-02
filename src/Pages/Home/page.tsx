@@ -1,8 +1,53 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import api from "../../api/axios";
+
+const Container = styled.div`
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  margin: 10px;
+`;
+
+const MyPage = styled.div`
+  font-size: 17px;
+  font-weight: 500;
+  padding: 10px;
+  color: ${({ theme }) => theme.text};
+  margin-left: 30px;
+`;
+
+const SignOut = styled.div`
+  font-size: 17px;
+  font-weight: 500;
+  padding: 10px;
+  color: ${({ theme }) => theme.text};
+  margin-left: 10px;
+`;
+
+const WriteBoard = styled.button`
+  border-radius: 0;
+  border-color: ${({ theme }) => theme.buttonBorder};
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.text};
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+`;
 
 const BoardItem = styled(Link)`
   background-color: ${({ theme }) => theme.signContainer};
@@ -46,7 +91,7 @@ const User = styled.div`
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: ${({ theme }) => theme.text};
+  color: black;
   text-align: right;
   margin-right: 10px;
 `;
@@ -87,6 +132,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<PostResponse>({ count: 0, list: [] });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -106,8 +152,21 @@ function Home() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const handleSignOut = () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "/";
+  };
+
+  const handleWriteBoard = () => {
+    navigate("/posts");
+  };
+
   return (
-    <div>
+    <Container>
+      <Header>
+        <MyPage>My Page</MyPage>
+        <SignOut onClick={handleSignOut}>Sign Out</SignOut>
+      </Header>
       {posts.list.length > 0 ? (
         posts.list.map((post) => (
           <BoardItem key={post.id} to={`/board/${post.id}`}>
@@ -119,7 +178,8 @@ function Home() {
       ) : (
         <div>No posts available</div>
       )}
-    </div>
+      <WriteBoard onClick={handleWriteBoard}>Write Board✏️</WriteBoard>
+    </Container>
   );
 }
 

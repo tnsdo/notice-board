@@ -55,7 +55,7 @@ function Board() {
   }, [id]);
 
   if (error) return <div>{error}</div>;
-  if (!post) return <div>게시물을 찾을 수 없습니다.</div>;
+  if (!post) return <div>Loading...</div>;
 
   return (
     <Container>

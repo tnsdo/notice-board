@@ -6,6 +6,7 @@ export interface Theme {
   buttonBackground: string;
   toggleButton: string;
   toggleText: string;
+  InputContainer: string;
 }
 
 export const lightTheme: Theme = {
@@ -16,6 +17,7 @@ export const lightTheme: Theme = {
   buttonBackground: "#ffffff",
   toggleButton: "#e9e9ea",
   toggleText: "#000000",
+  InputContainer: "#ffffff",
 };
 
 export const darkTheme: Theme = {
@@ -26,6 +28,7 @@ export const darkTheme: Theme = {
   buttonBackground: "#000000",
   toggleButton: "#24c64c",
   toggleText: "#ffffff",
+  InputContainer: "rgb(28,28,30)",
 };
 
 export const theme = {

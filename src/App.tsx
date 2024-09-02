@@ -19,6 +19,7 @@ import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
 import DarkModeToggle from "./Pages/Theme/toggle.tsx";
+import WriteBoard from "./Pages/write/page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const Background = styled.div`
 `;
 
 const Display = styled.div`
+  width: 100%;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -81,6 +83,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
           <Route path="/board/:id" element={<Board />} />
+          <Route path="/posts" element={<WriteBoard />} />
         </Routes>
       </Display>
     </Background>
@@ -90,13 +93,13 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <AuthProvider>
+      <AuthProvider>
+        <Router>
           <ThemeProvider>
             <AppContent />
           </ThemeProvider>
-        </AuthProvider>
-      </Router>
+        </Router>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

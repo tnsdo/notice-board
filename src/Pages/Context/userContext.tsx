@@ -8,9 +8,14 @@ import React, {
 
 import api from "../../api/axios";
 
+interface User {
+  email: string;
+  nickname: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  email: string;
+  user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   signIn: (email: string, password: string) => Promise<void>;
@@ -32,7 +37,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,11 +45,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signIn = useCallback(async (email: string, password: string) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken, user } = response.data;
 
-      console.log(response.data);
-
-      setEmail(email);
+      setUser(user);
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
       setIsAuthenticated(true);
@@ -60,21 +63,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    setEmail("");
+    setUser(null);
     setAccessToken(null);
     setRefreshToken(null);
     setIsAuthenticated(false);
-    localStorage.removeItem("email");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("expiresIn");
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        email,
+        user,
         accessToken,
         refreshToken,
         signIn,
