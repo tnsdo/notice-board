@@ -1,8 +1,15 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 import api from "../../api/axios";
 
 interface AuthContextType {
+  isAuthenticated: boolean;
   email: string;
   accessToken: string | null;
   refreshToken: string | null;
@@ -20,12 +27,15 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<React.PropsWithChildren<object>> = ({
-  children,
-}) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [email, setEmail] = useState("");
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
@@ -37,6 +47,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<object>> = ({
       setEmail(email);
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
+      setIsAuthenticated(true);
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
@@ -52,6 +63,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<object>> = ({
     setEmail("");
     setAccessToken(null);
     setRefreshToken(null);
+    setIsAuthenticated(false);
     localStorage.removeItem("email");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -60,7 +72,14 @@ export const AuthProvider: React.FC<React.PropsWithChildren<object>> = ({
 
   return (
     <AuthContext.Provider
-      value={{ email, accessToken, refreshToken, signIn, signOut }}
+      value={{
+        isAuthenticated,
+        email,
+        accessToken,
+        refreshToken,
+        signIn,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>

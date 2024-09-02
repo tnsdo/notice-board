@@ -11,7 +11,8 @@ import {
 import styled, { useTheme } from "styled-components";
 
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
-import { AuthProvider } from "./Pages/Context/userContext.tsx"; // AuthProvider를 import
+import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
+import Board from "./Pages/Home/board.tsx";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
 import Home from "./Pages/Home/page.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
@@ -28,7 +29,6 @@ const Background = styled.div`
 `;
 
 const Display = styled.div`
-  width: 600px;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -47,16 +47,19 @@ const Header = styled.div`
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleHeaderClick = () => {
-    navigate("/");
+    if (isAuthenticated) {
+      navigate("/home");
+    } else {
+      navigate("/");
+    }
   };
 
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppContentWithTheme handleHeaderClick={handleHeaderClick} />
-      </AuthProvider>
+      <AppContentWithTheme handleHeaderClick={handleHeaderClick} />
     </ThemeProvider>
   );
 };
@@ -77,6 +80,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/board/:id" element={<Board />} />
         </Routes>
       </Display>
     </Background>
@@ -87,7 +91,11 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <AppContent />
+        <AuthProvider>
+          <ThemeProvider>
+            <AppContent />
+          </ThemeProvider>
+        </AuthProvider>
       </Router>
     </QueryClientProvider>
   );

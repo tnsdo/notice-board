@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import api from "../../api/axios";
@@ -75,6 +76,7 @@ function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { signIn } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     try {
@@ -86,6 +88,7 @@ function SignIn() {
       if (response.status === 200) {
         await signIn(email, password);
         console.log("Sign in success!");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Sign in error:", error);

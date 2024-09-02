@@ -1,46 +1,98 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-interface User {
-  id: string;
-  nickname: string;
-  createdAt: string;
-}
+import api from "../../api/axios";
 
-interface Board {
-  id: string;
-  title: string;
-  createdAt: string;
-  creator: User;
-}
+const BoardItem = styled(Link)`
+  background-color: #f4f4f4;
+  height: auto;
+  height: 80px;
+  width: 500px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 20px;
+  list-style: none;
+  text-decoration: none;
+  display: block;
+`;
 
-interface Post {
+const BoardTitle = styled.div`
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 15px;
+  text-align: left;
+  color: black;
+  margin-left: 20px;
+  margin-right: 9px;
+  padding-top: 20px;
+`;
+
+const BoardBody = styled.div`
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: left;
+  color: black;
+  margin-left: 20px;
+  margin-right: 9px;
+  padding-top: 8px;
+`;
+
+const User = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: left;
+  color: black;
+  text-align: right;
+  margin-right: 10px;
+`;
+
+export interface Post {
   id: string;
   title: string;
   body: string;
   tags: string[];
-  board: Board;
+  board: {
+    id: string;
+    title: string;
+    createdAt: string;
+    creator: {
+      id: string;
+      nickname: string;
+      createdAt: string;
+    };
+  };
   createdAt: string;
-  createdBy: User;
+  createdBy: {
+    id: string;
+    nickname: string;
+    createdAt: string;
+  };
+  images: {
+    image: string;
+    id: string;
+  }[];
 }
 
-interface PostResponse {
+export interface PostResponse {
   count: number;
   list: Post[];
 }
 
-function HomePage() {
-  const [posts, setPosts] = useState<Post[]>([]);
+function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [posts, setPosts] = useState<PostResponse>({ count: 0, list: [] });
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get<PostResponse>(
-          "https://api.2024.newbies.gistory.me/boards",
-        );
-        setPosts(response.data.list);
+        const response = await api.get<PostResponse>("/posts");
+        setPosts(response.data);
         setLoading(false);
       } catch (err) {
         setError("Error");
@@ -56,18 +108,19 @@ function HomePage() {
 
   return (
     <div>
-      {posts.map((post) => (
-        <div key={post.id}>
-          <h2>{post.title}</h2>
-          <p>{post.body}</p>
-          <p>id: {post.createdBy.nickname}</p>
-          <p>Title: {post.board.title}</p>
-          <p>Body: {new Date(post.createdAt).toLocaleString()}</p>
-          <p>Tag: {post.tags.join(", ")}</p>
-        </div>
-      ))}
+      {posts.list.length > 0 ? (
+        posts.list.map((post) => (
+          <BoardItem key={post.id} to={`/board/${post.id}`}>
+            <BoardTitle>{post.title}</BoardTitle>
+            <BoardBody>{post.body}</BoardBody>
+            <User>{post.createdBy.nickname}</User>
+          </BoardItem>
+        ))
+      ) : (
+        <div>No posts available</div>
+      )}
     </div>
   );
 }
 
-export default HomePage;
+export default Home;
