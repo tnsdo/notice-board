@@ -43,9 +43,16 @@ const WriteBoard = styled.button`
   position: absolute;
   display: flex;
   align-items: center;
-  bottom: 8%;
+  bottom: 29%;
   left: 50%;
   transform: translateX(-50%);
+`;
+
+const BoardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const BoardItem = styled(Link)`
@@ -90,7 +97,7 @@ const User = styled.div`
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: black;
+  color: ${({ theme }) => theme.text};
   text-align: right;
   margin-right: 10px;
 `;
@@ -170,17 +177,19 @@ function Home() {
         <MyPage onClick={handleMyPage}>My Page</MyPage>
         <SignOut onClick={handleSignOut}>Sign Out</SignOut>
       </Header>
-      {posts.list.length > 0 ? (
-        posts.list.map((post) => (
-          <BoardItem key={post.id} to={`/board/${post.id}`}>
-            <BoardTitle>{post.title}</BoardTitle>
-            <BoardBody>{post.body}</BoardBody>
-            <User>{post.createdBy.nickname}</User>
-          </BoardItem>
-        ))
-      ) : (
-        <div>No posts available</div>
-      )}
+      <BoardContainer>
+        {posts.list.length > 0 ? (
+          posts.list.map((post) => (
+            <BoardItem key={post.id} to={`/board/${post.id}`}>
+              <BoardTitle>{post.title}</BoardTitle>
+              <BoardBody>{post.body}</BoardBody>
+              <User>{post.createdBy.nickname}</User>
+            </BoardItem>
+          ))
+        ) : (
+          <div>No posts available</div>
+        )}
+      </BoardContainer>
       <WriteBoard onClick={handleWriteBoard}>Write Board✏️</WriteBoard>
     </Container>
   );

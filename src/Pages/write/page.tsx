@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { v4 as uuidv4 } from "uuid";
 
 import api from "../../api/axios";
 
@@ -80,33 +81,12 @@ const Post = styled.button`
   transform: translateX(400%);
 `;
 
-const ImageInput = styled.input`
-  margin-top: 10px;
-`;
-
-const ImagePreviewContainer = styled.div`
-  margin-top: 10px;
-  width: 500px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid #ddd;
-`;
-
-const ImagePreview = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-`;
-
 const WriteBoard: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [PostUuid, setPostUuid] = useState<string>("");
 
   useEffect(() => {
     const getUserFromLocalStorage = () => {
@@ -118,21 +98,8 @@ const WriteBoard: React.FC = () => {
     };
 
     getUserFromLocalStorage();
+    setPostUuid(uuidv4());
   }, []);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    setImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreviewUrl(null);
-    }
-  };
 
   const handlePost = async () => {
     const tagArray = tags
@@ -140,27 +107,36 @@ const WriteBoard: React.FC = () => {
       .map((tag) => tag.trim())
       .filter((tag) => tag !== "");
 
-    const postData = new FormData();
-    postData.append("title", title);
-    postData.append("body", content);
-    postData.append("tags", JSON.stringify(tagArray));
-    if (image) {
-      postData.append("image", image);
-    }
+    const postData = {
+      title,
+      body: content,
+      tags: tagArray,
+    };
+
+    console.log("postData:", postData);
+
+    const token = localStorage.getItem("accessToken");
 
     try {
-      const response = await api.post("/posts", postData, {
+      const response = await api.post(`/posts/${PostUuid}`, postData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200 || response.status === 201) {
         console.log("Post Uploaded!");
         window.location.href = "/home";
+      } else {
+        console.error("Unexpected response status:", response.status);
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+      } else {
+        console.error("Error:", error.message);
+      }
     }
   };
 
@@ -187,12 +163,6 @@ const WriteBoard: React.FC = () => {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
-      {imagePreviewUrl && (
-        <ImagePreviewContainer>
-          <ImagePreview src={imagePreviewUrl} alt="Image Preview" />
-        </ImagePreviewContainer>
-      )}
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>
   );

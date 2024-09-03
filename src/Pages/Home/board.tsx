@@ -36,6 +36,23 @@ const UserId = styled.div`
   padding-bottom: 10px;
 `;
 
+const Tags = styled.div`
+  color: ${({ theme }) => theme.text};
+  display: flex;
+  gap: 5px;
+  margin-top: 30px;
+  font-weight: 500;
+  font-size: 16px;
+`;
+
+const Tag = styled.span`
+  background-color: ${({ theme }) => theme.tagBackground};
+  color: ${({ theme }) => theme.tagText};
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+`;
+
 function Board() {
   const { id } = useParams<{ id: string }>();
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +79,13 @@ function Board() {
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>
+      <Tags>
+        Tags [
+        {post.tags.map((tag) => (
+          <Tag key={tag}>{tag},</Tag>
+        ))}
+        ]
+      </Tags>
     </Container>
   );
 }

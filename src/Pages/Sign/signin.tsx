@@ -27,6 +27,8 @@ const EmailContainer = styled.div`
 `;
 
 const Email = styled.input`
+  color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.InputContainer};
   width: 120px;
   height: 22px;
   margin-left: 18px;
@@ -47,6 +49,8 @@ const Password = styled.input`
   margin-top: 20px;
   margin-left: 18px;
   font-size: 15px;
+  color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.InputContainer};
 `;
 
 const TogglePasswordButton = styled.button`
