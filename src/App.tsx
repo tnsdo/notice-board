@@ -12,15 +12,15 @@ import styled, { useTheme } from "styled-components";
 
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
 import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
-import Board from "./Pages/Home/board.tsx";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
 import Home from "./Pages/Home/page.tsx";
+import Post from "./Pages/post/page.tsx";
+import WritePost from "./Pages/post/writePost.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
 import DarkModeToggle from "./Pages/Theme/toggle.tsx";
 import MyPage from "./Pages/User/page.tsx";
-import WriteBoard from "./Pages/write/page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -83,8 +83,8 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/board/:id" element={<Board />} />
-          <Route path="/posts" element={<WriteBoard />} />
+          <Route path="/write-post" element={<WritePost />} />
+          <Route path="/post/:id" element={<Post />} />
           <Route path="/user" element={<MyPage />} />
         </Routes>
       </Display>

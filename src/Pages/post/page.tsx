@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import api from "../../api/axios";
-import { Post } from "../Home/page";
+import { api } from "../../api/axios";
+import { Post } from "../../type";
 
 const Container = styled.div`
   width: 500px;

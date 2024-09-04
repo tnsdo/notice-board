@@ -1,8 +1,8 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 
-const api: AxiosInstance = axios.create({
+export const api = axios.create({
   baseURL: "/local",
-  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
-
-export default api;

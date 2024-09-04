@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 
-import api from "../../api/axios";
+import { api } from "../../api/axios";
 
 const InputContainer = styled.div`
   display: flex;
@@ -81,12 +81,12 @@ const Post = styled.button`
   transform: translateX(400%);
 `;
 
-const WriteBoard: React.FC = () => {
+const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [PostUuid, setPostUuid] = useState<string>("");
+  const [boardUuid, setBoardUuid] = useState<string>("");
 
   useEffect(() => {
     const getUserFromLocalStorage = () => {
@@ -97,8 +97,26 @@ const WriteBoard: React.FC = () => {
       }
     };
 
+    const getBoardUuid = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const boardResponse = await api.get("/boards", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (boardResponse.data.list && boardResponse.data.list.length > 0) {
+          const boardUuid = uuidv4();
+          setBoardUuid(boardUuid);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
     getUserFromLocalStorage();
-    setPostUuid(uuidv4());
+    getBoardUuid();
   }, []);
 
   const handlePost = async () => {
@@ -111,14 +129,15 @@ const WriteBoard: React.FC = () => {
       title,
       body: content,
       tags: tagArray,
+      boardUuid: boardUuid,
     };
 
-    console.log("postData:", postData);
+    console.log("요청 데이터:", postData);
 
     const token = localStorage.getItem("accessToken");
 
     try {
-      const response = await api.post(`/posts/${PostUuid}`, postData, {
+      const response = await api.post(`/posts`, postData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -126,16 +145,20 @@ const WriteBoard: React.FC = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        console.log("Post Uploaded!");
+        console.log("게시물 업로드 성공!");
         window.location.href = "/home";
       } else {
-        console.error("Unexpected response status:", response.status);
+        console.error("예상치 못한 응답 상태:", response.status);
       }
     } catch (error: any) {
       if (error.response) {
-        console.error("Error response:", error.response.data);
+        console.error("오류 응답:", error.response.data);
+        console.error("오류 상태:", error.response.status);
+        console.error("오류 헤더:", error.response.headers);
+      } else if (error.request) {
+        console.error("요청 오류:", error.request);
       } else {
-        console.error("Error:", error.message);
+        console.error("오류 메시지:", error.message);
       }
     }
   };
@@ -168,4 +191,4 @@ const WriteBoard: React.FC = () => {
   );
 };
 
-export default WriteBoard;
+export default WritePost;

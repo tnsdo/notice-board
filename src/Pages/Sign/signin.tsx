@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import api from "../../api/axios";
+import { api } from "../../api/axios";
 import { useAuth } from "../../Pages/Context/userContext";
 
 const SignContainer = styled.div`
