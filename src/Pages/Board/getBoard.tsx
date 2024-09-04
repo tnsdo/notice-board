@@ -36,9 +36,9 @@ const BoardItem = styled.li`
 const BoardTitle = styled.div`
   font-size: 17px;
   font-weight: 500;
-  padding: 10px;
   color: ${({ theme }) => theme.text};
-  min-width: 150px;
+  min-width: 50px;
+  margin-right: 10px;
   text-align: center;
 `;
 

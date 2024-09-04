@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import GetBoard from "../Board/getBoard";
-import Post from "../post/showPost";
+import Post from "../post/showAllPost";
 
 const Container = styled.div`
   width: 100%;
@@ -38,16 +38,23 @@ const SignOut = styled.div`
   margin-right: 20px;
 `;
 
-const WritePost = styled.button`
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const Button = styled.button`
   border-radius: 0;
   border-color: ${({ theme }) => theme.buttonBorder};
   background-color: ${({ theme }) => theme.buttonBackground};
   color: ${({ theme }) => theme.text};
   display: flex;
   align-items: center;
-  margin-top: 20px;
   font-size: 16px;
   cursor: pointer;
+  padding: 10px 15px;
 `;
 
 const Divider = styled.div`
@@ -73,6 +80,10 @@ function Home() {
     navigate("/user");
   };
 
+  const handleCreateBoard = () => {
+    navigate("/create-board");
+  };
+
   return (
     <Container>
       <Header>
@@ -82,7 +93,10 @@ function Home() {
         <Divider />
         <SignOut onClick={handleSignOut}>Sign Out</SignOut>
       </Header>
-      <WritePost onClick={handleWritePost}>Write Post✏️</WritePost>
+      <ButtonContainer>
+        <Button onClick={handleWritePost}>Write Post✏️</Button>
+        <Button onClick={handleCreateBoard}>Create Board🔨</Button>
+      </ButtonContainer>
       <Post />
     </Container>
   );

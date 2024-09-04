@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
+import BoardPage from "./Pages/Board/page";
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
 import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
@@ -89,6 +90,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/write-post" element={<WritePost />} />
           <Route path="/post/:id" element={<Post />} />
           <Route path="/user" element={<MyPage />} />
+          <Route path="/board/:boardId" element={<BoardPage />} />
         </Routes>
       </Display>
     </Background>
