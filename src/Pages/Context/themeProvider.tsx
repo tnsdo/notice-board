@@ -41,6 +41,7 @@ function useTheme(): ["light" | "dark", () => void] {
   const { ThemeMode, setThemeMode } = context;
 
   const toggleTheme = useCallback(() => {
+    console.log("토글 전 테마:", ThemeMode);
     if (ThemeMode === "light") {
       setThemeMode("dark");
       window.localStorage.setItem("theme", "dark");
@@ -48,6 +49,7 @@ function useTheme(): ["light" | "dark", () => void] {
       setThemeMode("light");
       window.localStorage.setItem("theme", "light");
     }
+    console.log("토글 후 테마:", ThemeMode);
   }, [ThemeMode, setThemeMode]);
 
   return [ThemeMode, toggleTheme];

@@ -9,7 +9,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const Header = styled.div`
@@ -18,7 +18,8 @@ const Header = styled.div`
   align-items: center;
   width: 100%;
   height: 30px;
-  margin: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 `;
 
 const MyPage = styled.div`
@@ -26,7 +27,7 @@ const MyPage = styled.div`
   font-weight: 500;
   padding: 10px;
   color: ${({ theme }) => theme.text};
-  margin: 20px;
+  margin-left: 20px;
 `;
 
 const SignOut = styled.div`
@@ -34,7 +35,7 @@ const SignOut = styled.div`
   font-weight: 500;
   padding: 10px;
   color: ${({ theme }) => theme.text};
-  margin: 20px;
+  margin-right: 20px;
 `;
 
 const WritePost = styled.button`
@@ -42,12 +43,18 @@ const WritePost = styled.button`
   border-color: ${({ theme }) => theme.buttonBorder};
   background-color: ${({ theme }) => theme.buttonBackground};
   color: ${({ theme }) => theme.text};
-  position: absolute;
   display: flex;
   align-items: center;
-  bottom: 20%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 20px;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+const Divider = styled.div`
+  height: 20px;
+  width: 1px;
+  background-color: ${({ theme }) => theme.text};
+  margin: 0;
 `;
 
 function Home() {
@@ -70,11 +77,13 @@ function Home() {
     <Container>
       <Header>
         <MyPage onClick={handleMyPage}>My Page</MyPage>
+        <Divider />
         <GetBoard />
+        <Divider />
         <SignOut onClick={handleSignOut}>Sign Out</SignOut>
       </Header>
-      <Post />
       <WritePost onClick={handleWritePost}>Write Post✏️</WritePost>
+      <Post />
     </Container>
   );
 }

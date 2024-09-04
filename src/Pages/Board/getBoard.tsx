@@ -22,12 +22,24 @@ interface BoardResponse {
   list: Board[];
 }
 
+const BoardList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+`;
+
+const BoardItem = styled.li`
+  margin: 10px;
+`;
+
 const BoardTitle = styled.div`
   font-size: 17px;
   font-weight: 500;
   padding: 10px;
   color: ${({ theme }) => theme.text};
-  margin: 20px;
+  min-width: 150px;
+  text-align: center;
 `;
 
 const GetBoard = () => {
@@ -50,17 +62,17 @@ const GetBoard = () => {
   return (
     <div>
       {boardCount === 0 ? (
-        <div>No boards found</div>
+        <div>No boards found.</div>
       ) : (
-        <ul>
+        <BoardList>
           {boards.map((board) => (
-            <li key={board.id}>
+            <BoardItem key={board.id}>
               <Link to={`/board/${board.id}`}>
                 <BoardTitle>{board.title}</BoardTitle>
               </Link>
-            </li>
+            </BoardItem>
           ))}
-        </ul>
+        </BoardList>
       )}
     </div>
   );

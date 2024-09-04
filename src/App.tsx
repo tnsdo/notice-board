@@ -26,15 +26,18 @@ const queryClient = new QueryClient();
 
 const Background = styled.div`
   background-color: ${({ theme }) => theme.background};
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 const Display = styled.div`
   width: 100%;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,9 +78,9 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
   return (
     <Background theme={theme}>
       <GlobalStyle theme={theme} />
-      <DarkModeToggle />
       <Display>
         <Header onClick={handleHeaderClick}>Board</Header>
+        <DarkModeToggle />
         <Routes>
           <Route path="/" element={<OnBoarding />} />
           <Route path="/signin" element={<SignIn />} />
