@@ -73,7 +73,7 @@ function Home() {
   };
 
   const handleWritePost = () => {
-    navigate("/posts");
+    navigate("/write-post");
   };
 
   const handleMyPage = () => {

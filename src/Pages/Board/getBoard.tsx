@@ -10,7 +10,7 @@ interface Creator {
   createdAt: string;
 }
 
-interface Board {
+export interface Board {
   id: string;
   title: string;
   createdAt: string;
