@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { api } from "../../api/axios";
-import { Board, BoardResponse } from "../../type";
+import { getBoard } from "../../api/board";
+import { Board } from "../../type";
 
 const BoardList = styled.ul`
   display: flex;
@@ -32,9 +32,15 @@ const GetBoard = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await api.get<BoardResponse>("/boards");
-        setBoards(response.data.list);
-        setBoardCount(response.data.count);
+        const response = await getBoard();
+        if (
+          response &&
+          response.count !== undefined &&
+          Array.isArray(response.list)
+        ) {
+          setBoards(response.list);
+          setBoardCount(response.count);
+        }
       } catch (error) {
         console.error("Error:", error);
       }
@@ -50,7 +56,7 @@ const GetBoard = () => {
         <BoardList>
           {boards.map((board) => (
             <BoardItem key={board.id}>
-              <Link to={`/board/${board.id}`}>
+              <Link to={`/board/${board.id}`} key={board.id}>
                 <BoardTitle>{board.title}</BoardTitle>
               </Link>
             </BoardItem>

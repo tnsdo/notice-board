@@ -13,7 +13,16 @@ const BoardContainer = styled.div`
   justify-content: center;
 `;
 
-const BoardItem = styled(Link)`
+const BoardTitle = styled.div`
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: left;
+  color: ${({ theme }) => theme.text};
+  margin-top: 20px;
+  margin-bottom: 10px;
+`;
+const PostItem = styled(Link)`
   background-color: ${({ theme }) => theme.signContainer};
   height: auto;
   height: 80px;
@@ -28,7 +37,7 @@ const BoardItem = styled(Link)`
   display: block;
 `;
 
-const BoardTitle = styled.div`
+const PostTitle = styled.div`
   font-size: 15px;
   font-weight: 600;
   line-height: 15px;
@@ -39,7 +48,7 @@ const BoardTitle = styled.div`
   padding-top: 20px;
 `;
 
-const BoardBody = styled.div`
+const PostBody = styled.div`
   font-size: 15px;
   font-weight: 400;
   line-height: 15px;
@@ -64,20 +73,23 @@ const BoardPage = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
   const [posts, setPosts] = useState<Post[]>([]);
   const [postCount, setPostCount] = useState<number>(0);
+  const [boardTitle, setBoardTitle] = useState<string>("");
 
   useEffect(() => {
-    getPostsByBoard(boardUuid as string).then((data) => {
-      setPosts(data.list);
-      setPostCount(data.count);
-    });
-
     const fetchPosts = async () => {
+      if (!boardUuid) {
+        console.error("boardUuid가 없습니다.");
+        return;
+      }
       try {
-        const data = await getPostsByBoard(boardUuid as string);
+        const data = await getPostsByBoard(boardUuid);
         setPosts(data.list);
         setPostCount(data.count);
+        if (data.list.length > 0) {
+          setBoardTitle(data.list[0].board.title);
+        }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("게시물 가져오기 오류:", error);
       }
     };
     fetchPosts();
@@ -89,14 +101,14 @@ const BoardPage = () => {
         <div>No posts found.</div>
       ) : (
         <BoardContainer>
+          <BoardTitle>{boardTitle}</BoardTitle>
           {posts.map((post) => (
             <Link to={`/post/${post.id}`} key={post.id}>
-              <BoardItem key={post.id} to={`/post/${post.id}`}>
-                <BoardTitle>{post.board.title}</BoardTitle>
-                <BoardTitle>{post.title}</BoardTitle>
-                <BoardBody>{post.body}</BoardBody>
+              <PostItem key={post.id} to={`/post/${post.id}`}>
+                <PostTitle>{post.title}</PostTitle>
+                <PostBody>{post.body}</PostBody>
                 <User>{post.createdBy.nickname}</User>
-              </BoardItem>
+              </PostItem>
             </Link>
           ))}
         </BoardContainer>

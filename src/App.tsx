@@ -90,7 +90,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/write-post" element={<WritePost />} />
           <Route path="/post/:id" element={<Post />} />
           <Route path="/user" element={<MyPage />} />
-          <Route path="/board/:boardId" element={<BoardPage />} />
+          <Route path="/board/:boardUuid" element={<BoardPage />} />
         </Routes>
       </Display>
     </Background>
