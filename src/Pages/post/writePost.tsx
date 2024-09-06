@@ -140,17 +140,22 @@ const WritePost: React.FC = () => {
       .filter((tag) => tag !== "");
 
     const postData = {
-      title,
-      content,
+      title: title,
+      body: content,
       tags: tagArray,
     };
 
     try {
+      console.log("Sending post data:", postData);
       const response = await writePost(selectedBoardId, postData);
       console.log("Post creation successful:", response);
       navigate(`/home`);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating post:", error);
+      if (error.response) {
+        console.error("Server response:", error.response.data);
+      }
+      alert("게시물 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 

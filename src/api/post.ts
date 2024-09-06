@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { api } from "./axios";
 
 export const getPosts = async () => {
@@ -14,10 +16,18 @@ export const writePost = async (
   boardUuid: string,
   postData: {
     title: string;
-    content: string;
+    body: string;
     tags: string[];
   },
 ) => {
-  const response = await api.post(`/posts?boardUuid=${boardUuid}`, postData);
-  return response.data;
+  try {
+    const response = await axios.post(
+      `/api/boards/${boardUuid}/posts`,
+      postData,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in writePost:", error);
+    throw error;
+  }
 };
