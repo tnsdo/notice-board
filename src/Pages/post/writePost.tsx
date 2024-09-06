@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { v4 as uuidv4 } from "uuid";
 
-import { api } from "../../api/axios";
+import { getBoard } from "../../api/board";
+import { writePost } from "../../api/post";
+import { Board } from "../../type";
 
 const InputContainer = styled.div`
   display: flex;
@@ -81,12 +83,32 @@ const Post = styled.button`
   transform: translateX(400%);
 `;
 
+const BoardSelect = styled.select`
+  width: 500px;
+  height: 40px;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.InputContainer};
+  font-weight: 600;
+  font-size: 18px;
+  font-family: "Pretendard";
+  border: none;
+  margin-bottom: 10px;
+
+  option {
+    color: ${({ theme }) => theme.text};
+    background-color: ${({ theme }) => theme.InputContainer};
+  }
+`;
+
 const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [boardUuid, setBoardUuid] = useState<string>("");
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [selectedBoardId, setSelectedBoardId] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserFromLocalStorage = () => {
@@ -97,26 +119,18 @@ const WritePost: React.FC = () => {
       }
     };
 
-    const getBoardUuid = async () => {
-      const token = localStorage.getItem("accessToken");
+    getUserFromLocalStorage();
+
+    const fetchBoards = async () => {
       try {
-        const boardResponse = await api.get("/boards", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (boardResponse.data.list && boardResponse.data.list.length > 0) {
-          const boardUuid = uuidv4();
-          setBoardUuid(boardUuid);
-        }
+        const boardResponse = await getBoard();
+        setBoards(boardResponse.list);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Failed to fetch boards:", error);
       }
     };
 
-    getUserFromLocalStorage();
-    getBoardUuid();
+    fetchBoards();
   }, []);
 
   const handlePost = async () => {
@@ -127,44 +141,32 @@ const WritePost: React.FC = () => {
 
     const postData = {
       title,
-      body: content,
+      content,
       tags: tagArray,
-      boardUuid: boardUuid,
     };
 
-    console.log("요청 데이터:", postData);
-
-    const token = localStorage.getItem("accessToken");
-
     try {
-      const response = await api.post(`/posts`, postData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        console.log("게시물 업로드 성공!");
-        window.location.href = "/home";
-      } else {
-        console.error("예상치 못한 응답 상태:", response.status);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.error("오류 응답:", error.response.data);
-        console.error("오류 상태:", error.response.status);
-        console.error("오류 헤더:", error.response.headers);
-      } else if (error.request) {
-        console.error("요청 오류:", error.request);
-      } else {
-        console.error("오류 메시지:", error.message);
-      }
+      const response = await writePost(selectedBoardId, postData);
+      console.log("Post creation successful:", response);
+      navigate(`/home`);
+    } catch (error) {
+      console.error("Error creating post:", error);
     }
   };
 
   return (
     <InputContainer>
+      <BoardSelect
+        value={selectedBoardId}
+        onChange={(e) => setSelectedBoardId(e.target.value)}
+      >
+        <option value="">Select Board</option>
+        {boards.map((board) => (
+          <option key={board.id} value={board.id}>
+            {board.title}
+          </option>
+        ))}
+      </BoardSelect>
       <TitleInput
         type="text"
         placeholder="Write Title Here"

@@ -15,7 +15,7 @@ const BoardTitle = styled.div`
   font-weight: 400;
   line-height: 30px;
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 25px;
 `;
 
 const Title = styled.div`
@@ -84,7 +84,7 @@ function Board() {
 
   return (
     <Container>
-      <BoardTitle>Board Title: {post.board.title}</BoardTitle>
+      <BoardTitle>{post.board.title}</BoardTitle>
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>
