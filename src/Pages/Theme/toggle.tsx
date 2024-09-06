@@ -7,9 +7,10 @@ const ToggleContainer = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
-  bottom: 4%;
-  left: 10%;
-  transform: translateX(-50%);
+  justify-content: flex-end;
+  width: 100%;
+  padding-top: 10px;
+  padding-right: 30px;
 `;
 
 const ToggleLabel = styled.label`

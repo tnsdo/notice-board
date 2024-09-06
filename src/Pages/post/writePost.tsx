@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import api from "../../api/axios";
+import { getBoard } from "../../api/board";
+import { writePost } from "../../api/post";
+import { Board } from "../../type";
 
 const InputContainer = styled.div`
   display: flex;
@@ -80,33 +83,32 @@ const Post = styled.button`
   transform: translateX(400%);
 `;
 
-const ImageInput = styled.input`
-  margin-top: 10px;
-`;
-
-const ImagePreviewContainer = styled.div`
-  margin-top: 10px;
+const BoardSelect = styled.select`
   width: 500px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid #ddd;
+  height: 40px;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.InputContainer};
+  font-weight: 600;
+  font-size: 18px;
+  font-family: "Pretendard";
+  border: none;
+  margin-bottom: 10px;
+
+  option {
+    color: ${({ theme }) => theme.text};
+    background-color: ${({ theme }) => theme.InputContainer};
+  }
 `;
 
-const ImagePreview = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-`;
-
-const WriteBoard: React.FC = () => {
+const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [selectedBoardId, setSelectedBoardId] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserFromLocalStorage = () => {
@@ -118,21 +120,18 @@ const WriteBoard: React.FC = () => {
     };
 
     getUserFromLocalStorage();
-  }, []);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    setImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreviewUrl(null);
-    }
-  };
+    const fetchBoards = async () => {
+      try {
+        const boardResponse = await getBoard();
+        setBoards(boardResponse.list);
+      } catch (error) {
+        console.error("Failed to fetch boards:", error);
+      }
+    };
+
+    fetchBoards();
+  }, []);
 
   const handlePost = async () => {
     const tagArray = tags
@@ -140,32 +139,39 @@ const WriteBoard: React.FC = () => {
       .map((tag) => tag.trim())
       .filter((tag) => tag !== "");
 
-    const postData = new FormData();
-    postData.append("title", title);
-    postData.append("body", content);
-    postData.append("tags", JSON.stringify(tagArray));
-    if (image) {
-      postData.append("image", image);
-    }
+    const postData = {
+      title: title,
+      body: content,
+      tags: tagArray,
+    };
 
     try {
-      const response = await api.post("/posts", postData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        console.log("Post Uploaded!");
-        window.location.href = "/home";
+      console.log("Sending post data:", postData);
+      const response = await writePost(selectedBoardId, postData);
+      console.log("Post creation successful:", response);
+      navigate(`/home`);
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      if (error.response) {
+        console.error("Server response:", error.response.data);
       }
-    } catch (error) {
-      console.error("Error:", error);
+      alert("게시물 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
   return (
     <InputContainer>
+      <BoardSelect
+        value={selectedBoardId}
+        onChange={(e) => setSelectedBoardId(e.target.value)}
+      >
+        <option value="">Select Board</option>
+        {boards.map((board) => (
+          <option key={board.id} value={board.id}>
+            {board.title}
+          </option>
+        ))}
+      </BoardSelect>
       <TitleInput
         type="text"
         placeholder="Write Title Here"
@@ -187,15 +193,9 @@ const WriteBoard: React.FC = () => {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
-      {imagePreviewUrl && (
-        <ImagePreviewContainer>
-          <ImagePreview src={imagePreviewUrl} alt="Image Preview" />
-        </ImagePreviewContainer>
-      )}
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>
   );
 };
 
-export default WriteBoard;
+export default WritePost;

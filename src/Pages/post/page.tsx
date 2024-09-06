@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import api from "../../api/axios";
-import { Post } from "../Home/page";
+import { api } from "../../api/axios";
+import { Post } from "../../type";
 
 const Container = styled.div`
   width: 500px;
   margin-top: 30px;
+`;
+const BoardTitle = styled.div`
+  color: ${({ theme }) => theme.text};
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 30px;
+  text-align: center;
+  padding-bottom: 25px;
 `;
 
 const Title = styled.div`
@@ -36,6 +44,23 @@ const UserId = styled.div`
   padding-bottom: 10px;
 `;
 
+const Tags = styled.div`
+  color: ${({ theme }) => theme.text};
+  display: flex;
+  gap: 5px;
+  margin-top: 30px;
+  font-weight: 500;
+  font-size: 16px;
+`;
+
+const Tag = styled.span`
+  background-color: ${({ theme }) => theme.tagBackground};
+  color: ${({ theme }) => theme.tagText};
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+`;
+
 function Board() {
   const { id } = useParams<{ id: string }>();
   const [error, setError] = useState<string | null>(null);
@@ -59,9 +84,17 @@ function Board() {
 
   return (
     <Container>
+      <BoardTitle>{post.board.title}</BoardTitle>
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>
+      <Tags>
+        Tags [
+        {post.tags.map((tag) => (
+          <Tag key={tag}>{tag},</Tag>
+        ))}
+        ]
+      </Tags>
     </Container>
   );
 }

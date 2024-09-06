@@ -3,7 +3,7 @@ import "../../App.css";
 import { useState } from "react";
 import styled from "styled-components";
 
-import api from "../../api/axios";
+import { api } from "../../api/axios";
 
 const SignContainer = styled.div`
   width: 500px;

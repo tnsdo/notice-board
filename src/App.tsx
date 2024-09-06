@@ -10,31 +10,36 @@ import {
 } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
+import CreateBoard from "./Pages/Board/createBoard.tsx";
+import BoardPage from "./Pages/Board/page";
 import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
 import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
-import Board from "./Pages/Home/board.tsx";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
 import Home from "./Pages/Home/page.tsx";
+import Post from "./Pages/post/page.tsx";
+import WritePost from "./Pages/post/writePost.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
 import { GlobalStyle } from "./Pages/Theme/global-style.ts";
 import DarkModeToggle from "./Pages/Theme/toggle.tsx";
 import MyPage from "./Pages/User/page.tsx";
-import WriteBoard from "./Pages/write/page.tsx";
 
 const queryClient = new QueryClient();
 
 const Background = styled.div`
   background-color: ${({ theme }) => theme.background};
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 const Display = styled.div`
   width: 100%;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,17 +80,19 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
   return (
     <Background theme={theme}>
       <GlobalStyle theme={theme} />
-      <DarkModeToggle />
       <Display>
         <Header onClick={handleHeaderClick}>Board</Header>
+        <DarkModeToggle />
         <Routes>
           <Route path="/" element={<OnBoarding />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/board/:id" element={<Board />} />
-          <Route path="/posts" element={<WriteBoard />} />
+          <Route path="/write-post" element={<WritePost />} />
+          <Route path="/post/:id" element={<Post />} />
           <Route path="/user" element={<MyPage />} />
+          <Route path="/board/:boardUuid" element={<BoardPage />} />
+          <Route path="/create-board" element={<CreateBoard />} />
         </Routes>
       </Display>
     </Background>

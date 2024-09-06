@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import api from "../../api/axios";
+import { api } from "../../api/axios";
 
 interface User {
   email: string;
