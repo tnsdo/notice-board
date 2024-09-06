@@ -29,3 +29,19 @@ export interface PostResponse {
   count: number;
   list: Post[];
 }
+
+export interface Board {
+  id: string;
+  title: string;
+  createdAt: string;
+  creator: {
+    id: string;
+    nickname: string;
+    createdAt: string;
+  };
+}
+
+export interface BoardResponse {
+  count: number;
+  list: Board[];
+}

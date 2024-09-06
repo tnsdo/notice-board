@@ -63,12 +63,19 @@ const User = styled.div`
 const BoardPage = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [postCount, setPostCount] = useState<number>(0);
 
   useEffect(() => {
+    getPostsByBoard(boardUuid as string).then((data) => {
+      setPosts(data.list);
+      setPostCount(data.count);
+    });
+
     const fetchPosts = async () => {
       try {
         const data = await getPostsByBoard(boardUuid as string);
-        setPosts(data);
+        setPosts(data.list);
+        setPostCount(data.count);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -78,13 +85,14 @@ const BoardPage = () => {
 
   return (
     <div>
-      {posts.length === 0 ? (
+      {postCount === 0 ? (
         <div>No posts found.</div>
       ) : (
         <BoardContainer>
           {posts.map((post) => (
             <Link to={`/post/${post.id}`} key={post.id}>
               <BoardItem key={post.id} to={`/post/${post.id}`}>
+                <BoardTitle>{post.board.title}</BoardTitle>
                 <BoardTitle>{post.title}</BoardTitle>
                 <BoardBody>{post.body}</BoardBody>
                 <User>{post.createdBy.nickname}</User>

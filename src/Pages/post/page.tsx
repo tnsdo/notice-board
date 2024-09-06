@@ -9,6 +9,14 @@ const Container = styled.div`
   width: 500px;
   margin-top: 30px;
 `;
+const BoardTitle = styled.div`
+  color: ${({ theme }) => theme.text};
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 30px;
+  text-align: center;
+  padding-bottom: 20px;
+`;
 
 const Title = styled.div`
   color: ${({ theme }) => theme.text};
@@ -76,6 +84,7 @@ function Board() {
 
   return (
     <Container>
+      <BoardTitle>Board Title: {post.board.title}</BoardTitle>
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>

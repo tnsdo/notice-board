@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import GetBoard from "../Board/getBoard";
-import Post from "../post/showAllPost";
+import Post from "../post/allPost";
 
 const Container = styled.div`
   width: 100%;

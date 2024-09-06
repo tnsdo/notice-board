@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getPosts } from "src/api/post";
+import { Link, useParams } from "react-router-dom";
+import { getPostsByBoard } from "src/api/post";
 import { PostResponse } from "src/type";
 import styled from "styled-components";
 
@@ -58,11 +58,13 @@ const User = styled.div`
   margin-right: 10px;
 `;
 
-function Post() {
+function PostByBoard() {
   const [posts, setPosts] = useState<PostResponse>();
+  const { boardUuid } = useParams<{ boardUuid: string }>();
+
   useEffect(() => {
-    getPosts().then((data) => setPosts(data));
-  }, []);
+    getPostsByBoard(boardUuid as string).then((data) => setPosts(data));
+  }, [boardUuid]);
 
   if (!posts) return <div>Loading...</div>;
 
@@ -71,6 +73,7 @@ function Post() {
       {posts.list.map((post) => (
         <Link to={`/post/${post.id}`} key={post.id}>
           <BoardItem key={post.id} to={`/post/${post.id}`}>
+            <BoardTitle>{post.board.title}</BoardTitle>
             <BoardTitle>{post.title}</BoardTitle>
             <BoardBody>{post.body}</BoardBody>
             <User>{post.createdBy.nickname}</User>
@@ -81,4 +84,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default PostByBoard;

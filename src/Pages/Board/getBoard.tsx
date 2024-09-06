@@ -3,24 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { api } from "../../api/axios";
-
-interface Creator {
-  id: string;
-  nickname: string;
-  createdAt: string;
-}
-
-export interface Board {
-  id: string;
-  title: string;
-  createdAt: string;
-  creator: Creator;
-}
-
-interface BoardResponse {
-  count: number;
-  list: Board[];
-}
+import { Board, BoardResponse } from "../../type";
 
 const BoardList = styled.ul`
   display: flex;
