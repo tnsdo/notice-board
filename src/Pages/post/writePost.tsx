@@ -146,7 +146,6 @@ const WritePost: React.FC = () => {
     };
 
     try {
-      console.log("Sending post data:", postData);
       const response = await writePost(selectedBoardId, postData);
       console.log("Post creation successful:", response);
       navigate(`/home`);
@@ -155,7 +154,6 @@ const WritePost: React.FC = () => {
       if (error.response) {
         console.error("Server response:", error.response.data);
       }
-      alert("게시물 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
