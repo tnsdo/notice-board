@@ -28,16 +28,6 @@ const TitleInput = styled.input`
   }
 `;
 
-const UserInfo = styled.div`
-  color: ${({ theme }) => theme.text};
-  font-size: 20px;
-  font-weight: 500;
-  text-align: left;
-  margin-left: 2px;
-  margin-bottom: 15px;
-  margin-top: 11px;
-`;
-
 const BodyInput = styled.input`
   width: 500px;
   color: ${({ theme }) => theme.text};
@@ -105,22 +95,11 @@ const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [userNickname, setUserNickname] = useState<string | null>(null);
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUserFromLocalStorage = () => {
-      const userString = localStorage.getItem("user");
-      if (userString) {
-        const user = JSON.parse(userString);
-        setUserNickname(user.nickname);
-      }
-    };
-
-    getUserFromLocalStorage();
-
     const fetchBoards = async () => {
       try {
         const boardResponse = await getBoard();
@@ -134,6 +113,11 @@ const WritePost: React.FC = () => {
   }, []);
 
   const handlePost = async () => {
+    if (!selectedBoardId) {
+      console.error("No board selected");
+      return;
+    }
+
     const tagArray = tags
       .split(",")
       .map((tag) => tag.trim())
@@ -176,9 +160,6 @@ const WritePost: React.FC = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <UserInfo>
-        <div>{userNickname}</div>
-      </UserInfo>
       <BodyInput
         type="text"
         placeholder="Write Content Here"
@@ -187,7 +168,7 @@ const WritePost: React.FC = () => {
       />
       <TagInput
         type="text"
-        placeholder="Write Tag Here(devide by comma)"
+        placeholder="Write Tag Here(divide by comma)"
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />

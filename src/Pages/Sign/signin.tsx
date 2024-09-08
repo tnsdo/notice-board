@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { signIn } from "../../api/user";
+import { useAuth } from "../../context/userContext";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -79,11 +80,14 @@ function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
+  const { setAccessToken, setUser, setRefreshToken } = useAuth();
 
   const handleSignIn = async () => {
     try {
       const userData = await signIn(email, password);
-      localStorage.setItem("user", JSON.stringify(userData));
+      setAccessToken(userData.accessToken);
+      setRefreshToken(userData.refreshToken);
+      setUser(userData.user);
       navigate("/home");
     } catch (error) {
       console.error("Error:", error);

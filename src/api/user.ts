@@ -18,5 +18,19 @@ export const signIn = async (email: string, password: string) => {
     email,
     password,
   });
+
+  return response.data;
+};
+
+export const refresh = async (refreshToken: string) => {
+  const response = await api.post(
+    "/auth/refresh",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    },
+  );
   return response.data;
 };
