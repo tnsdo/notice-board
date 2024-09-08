@@ -32,7 +32,7 @@ api.interceptors.response.use(
         error.config.headers["Authorization"] = `Bearer ${newToken}`;
         return api(error.config);
       } catch (refreshError) {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/signin";
         return Promise.reject(refreshError);

@@ -1512,7 +1512,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.5":
+"axios@npm:^1.7.7":
   version: 1.7.7
   resolution: "axios@npm:1.7.7"
   dependencies:
@@ -4801,7 +4801,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.19.0
     "@typescript-eslint/parser": ^6.19.0
     "@vitejs/plugin-react": ^4.2.1
-    axios: ^1.7.5
+    axios: ^1.7.7
     eslint: ^8.56.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-prettier: ^5.1.3
