@@ -30,6 +30,8 @@ const NickName = styled.input`
   height: 22px;
   margin-left: 20px;
   font-size: 15px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const EmailContainer = styled.div`
@@ -45,6 +47,8 @@ const Email = styled.input`
   height: 22px;
   margin-left: 20px;
   font-size: 15px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const PwContainer = styled.div`
@@ -60,6 +64,8 @@ const Password = styled.input`
   margin-top: 20px;
   margin-left: 15px;
   font-size: 15px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const Check = styled.button`
@@ -81,10 +87,11 @@ function SignUp() {
     try {
       const userData = await signUp(email, password, nickname);
       localStorage.setItem(
-        "user",
+        "userInfo",
         JSON.stringify({
           nickname: userData.nickname,
           email: userData.email,
+          password: userData.password,
         }),
       );
       alert("Sign up success!");

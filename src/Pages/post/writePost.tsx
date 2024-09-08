@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -27,16 +26,6 @@ const TitleInput = styled.input`
   ::placeholder {
     color: #bababa;
   }
-`;
-
-const UserInfo = styled.div`
-  color: ${({ theme }) => theme.text};
-  font-size: 20px;
-  font-weight: 500;
-  text-align: left;
-  margin-left: 2px;
-  margin-bottom: 15px;
-  margin-top: 11px;
 `;
 
 const BodyInput = styled.input`
@@ -106,33 +95,29 @@ const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
+  const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const navigate = useNavigate();
 
-  const { data: user } = useQuery("user", () => {
-    const userString = localStorage.getItem("user");
-    return userString ? JSON.parse(userString) : null;
-  });
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        const boardResponse = await getBoard();
+        setBoards(boardResponse.list);
+      } catch (error) {
+        console.error("Failed to fetch boards:", error);
+      }
+    };
 
-  const { data: boards = [] } = useQuery<Board[]>("boards", getBoard);
+    fetchBoards();
+  }, []);
 
-  const postMutation = useMutation(
-    (postData: { boardId: string; data: any }) =>
-      writePost(postData.boardId, postData.data),
-    {
-      onSuccess: () => {
-        navigate(`/home`);
-      },
-      onError: (error: any) => {
-        console.error("Error creating post:", error);
-        if (error.response) {
-          console.error("Server response:", error.response.data);
-        }
-      },
-    },
-  );
+  const handlePost = async () => {
+    if (!selectedBoardId) {
+      console.error("No board selected");
+      return;
+    }
 
-  const handlePost = () => {
     const tagArray = tags
       .split(",")
       .map((tag) => tag.trim())
@@ -144,7 +129,16 @@ const WritePost: React.FC = () => {
       tags: tagArray,
     };
 
-    postMutation.mutate({ boardId: selectedBoardId, data: postData });
+    try {
+      const response = await writePost(selectedBoardId, postData);
+      console.log("Post creation successful:", response);
+      navigate(`/home`);
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      if (error.response) {
+        console.error("Server response:", error.response.data);
+      }
+    }
   };
 
   return (
@@ -154,7 +148,7 @@ const WritePost: React.FC = () => {
         onChange={(e) => setSelectedBoardId(e.target.value)}
       >
         <option value="">Select Board</option>
-        {boards.map((board: Board) => (
+        {boards.map((board) => (
           <option key={board.id} value={board.id}>
             {board.title}
           </option>
@@ -166,9 +160,6 @@ const WritePost: React.FC = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <UserInfo>
-        <div>{user?.nickname}</div>
-      </UserInfo>
       <BodyInput
         type="text"
         placeholder="Write Content Here"
@@ -177,7 +168,7 @@ const WritePost: React.FC = () => {
       />
       <TagInput
         type="text"
-        placeholder="Write Tag Here(devide by comma)"
+        placeholder="Write Tag Here(divide by comma)"
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />

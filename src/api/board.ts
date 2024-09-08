@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { api } from "./axios";
 
 export const getBoard = async () => {
@@ -26,9 +24,25 @@ export const createBoard = async (title: string) => {
     );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      throw new Error("Access token expired");
-    }
+    console.error("Error in createBoard:", error);
     throw error;
   }
+};
+
+export const deleteBoard = async (boardUuid: string) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    throw new Error("Access token expired");
+  }
+
+  const response = await api.delete(`/boards/${boardUuid}`, {
+    params: {
+      boardUuid,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };

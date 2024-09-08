@@ -1,10 +1,15 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
+import { User } from "../type";
+
 interface AuthContextType {
-  token: string | null;
-  setToken: (token: string | null) => void;
+  accessToken: string | null;
+  setAccessToken: (token: string | null) => void;
   signOut: () => void;
   isAuthenticated: boolean;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  setRefreshToken: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,29 +27,53 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [token, setTokenState] = useState<string | null>(() =>
+  const [accessToken, setAccessTokenState] = useState<string | null>(() =>
     localStorage.getItem("accessToken"),
   );
+  const [user, setUserState] = useState<User | null>(() =>
+    JSON.parse(localStorage.getItem("userInfo") || "null"),
+  );
+  const [, setRefreshTokenState] = useState<string | null>(() =>
+    localStorage.getItem("refreshToken"),
+  );
 
-  const setToken = (newToken: string | null) => {
-    if (newToken) {
-      localStorage.setItem("accessToken", newToken);
+  const setAccessToken = (newAccessToken: string | null) => {
+    if (newAccessToken) {
+      localStorage.setItem("accessToken", newAccessToken);
     } else {
       localStorage.removeItem("accessToken");
     }
-    setTokenState(newToken);
+    setAccessTokenState(newAccessToken);
+  };
+
+  const setUser = (newUser: User | null) => {
+    setUserState(newUser);
+  };
+
+  const setRefreshToken = (newRefreshToken: string | null) => {
+    if (newRefreshToken) {
+      localStorage.setItem("refreshToken", newRefreshToken);
+    } else {
+      localStorage.removeItem("refreshToken");
+    }
+    setRefreshTokenState(newRefreshToken);
   };
 
   const signOut = () => {
-    setToken(null);
+    setAccessToken(null);
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userInfo");
   };
 
   const value: AuthContextType = {
-    token,
-    setToken,
+    accessToken,
+    setAccessToken,
     signOut,
-    isAuthenticated: !!token, // 추가된 부분
+    isAuthenticated: !!accessToken,
+    user,
+    setUser,
+    setRefreshToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

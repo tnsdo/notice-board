@@ -76,11 +76,10 @@ const UserInfo: React.FC = () => {
     nickname: string;
     email: string;
     profileImage: string;
-    password: string;
   } | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("userInfo");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -94,7 +93,7 @@ const UserInfo: React.FC = () => {
     <UserContainer>
       <Divider>Profile</Divider>
       <ProfileImageContainer>
-        <UserProfileImage src={user.profileImage || profile} alt="Profile" />
+        <UserProfileImage src={user.profileImage || profile} alt="profile" />
       </ProfileImageContainer>
       <DividerLine />
       <Divider>Info</Divider>

@@ -19,10 +19,9 @@ export const writePost = async (
   },
 ) => {
   try {
-    const response = await api.post(`/posts?boardUuid=${boardUuid}`, postData, {
-      headers: {
-        "Content-Type": "application/json",
-        accessToken: localStorage.getItem("accessToken"),
+    const response = await api.post(`/posts`, postData, {
+      params: {
+        boardUuid,
       },
     });
     return response.data;
