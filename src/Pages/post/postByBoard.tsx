@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { getPostsByBoard } from "src/api/post";
-import { PostResponse } from "src/type";
+import { Post } from "src/type";
 import styled from "styled-components";
 
 const BoardContainer = styled.div`
@@ -59,26 +59,30 @@ const User = styled.div`
 `;
 
 function PostByBoard() {
-  const [posts, setPosts] = useState<PostResponse>();
   const { boardUuid } = useParams<{ boardUuid: string }>();
 
-  useEffect(() => {
-    getPostsByBoard(boardUuid as string).then((data) => setPosts(data));
-  }, [boardUuid]);
+  const {
+    data: posts,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["posts", boardUuid],
+    queryFn: () => getPostsByBoard(boardUuid as string),
+  });
 
-  if (!posts) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load posts.</div>;
+  if (!posts) return <div>No posts found.</div>;
 
   return (
     <BoardContainer>
-      {posts.list.map((post) => (
-        <Link to={`/post/${post.id}`} key={post.id}>
-          <BoardItem key={post.id} to={`/post/${post.id}`}>
-            <BoardTitle>{post.board.title}</BoardTitle>
-            <BoardTitle>{post.title}</BoardTitle>
-            <BoardBody>{post.body}</BoardBody>
-            <User>{post.createdBy.nickname}</User>
-          </BoardItem>
-        </Link>
+      {posts.list.map((post: Post) => (
+        <BoardItem key={post.id} to={`/post/${post.id}`}>
+          <BoardTitle>{post.board.title}</BoardTitle>
+          <BoardTitle>{post.title}</BoardTitle>
+          <BoardBody>{post.body}</BoardBody>
+          <User>{post.createdBy.nickname}</User>
+        </BoardItem>
       ))}
     </BoardContainer>
   );

@@ -3,8 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { api } from "../../api/axios";
-import { useAuth } from "../../Pages/Context/userContext";
+import { signIn } from "../../api/user";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -79,22 +78,15 @@ function SignIn() {
   const [showPswd, setShowPswd] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-
-      if (response.status === 200) {
-        await signIn(email, password);
-        navigate("/home");
-      }
+      const userData = await signIn(email, password);
+      localStorage.setItem("user", JSON.stringify(userData));
+      navigate("/home");
     } catch (error) {
-      console.error("Sign in error:", error);
+      console.error("Error:", error);
     }
   };
 

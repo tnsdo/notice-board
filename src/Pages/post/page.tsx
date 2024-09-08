@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -63,24 +63,19 @@ const Tag = styled.span`
 
 function Board() {
   const { id } = useParams<{ id: string }>();
-  const [error, setError] = useState<string | null>(null);
-  const [post, setPost] = useState<Post | null>(null);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const response = await api.get<Post>(`/posts/${id}`);
-        setPost(response.data);
-      } catch (err) {
-        setError("Error fetching post");
-      }
-    };
+  const {
+    data: post,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["post", id],
+    queryFn: () => api.get<Post>(`/posts/${id}`).then((res) => res.data),
+  });
 
-    fetchPost();
-  }, [id]);
-
-  if (error) return <div>{error}</div>;
-  if (!post) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load posts.</div>;
+  if (!post) return <div>No posts found.</div>;
 
   return (
     <Container>

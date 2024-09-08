@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import { api } from "./axios";
 
 export const getPosts = async () => {
@@ -21,10 +19,12 @@ export const writePost = async (
   },
 ) => {
   try {
-    const response = await axios.post(
-      `/api/boards/${boardUuid}/posts`,
-      postData,
-    );
+    const response = await api.post(`/posts?boardUuid=${boardUuid}`, postData, {
+      headers: {
+        "Content-Type": "application/json",
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error in writePost:", error);

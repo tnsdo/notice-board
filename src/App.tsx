@@ -1,6 +1,7 @@
 import "./App.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "./api/query";
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -10,21 +11,19 @@ import {
 } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
+import { ThemeProvider } from "./context/themeProvider.tsx";
+import { AuthProvider, useAuth } from "./context/userContext.tsx";
 import CreateBoard from "./Pages/Board/createBoard.tsx";
 import BoardPage from "./Pages/Board/page";
-import { ThemeProvider } from "./Pages/Context/themeProvider.tsx";
-import { AuthProvider, useAuth } from "./Pages/Context/userContext.tsx";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
 import Home from "./Pages/Home/page.tsx";
 import Post from "./Pages/post/page.tsx";
 import WritePost from "./Pages/post/writePost.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
 import SignUp from "./Pages/Sign/signup.tsx";
-import { GlobalStyle } from "./Pages/Theme/global-style.ts";
-import DarkModeToggle from "./Pages/Theme/toggle.tsx";
 import MyPage from "./Pages/User/page.tsx";
-
-const queryClient = new QueryClient();
+import { GlobalStyle } from "./Theme/global-style.ts";
+import DarkModeToggle from "./Theme/toggle.tsx";
 
 const Background = styled.div`
   background-color: ${({ theme }) => theme.background};
@@ -101,15 +100,15 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
+    <Router>
       <AuthProvider>
-        <Router>
+        <QueryClientProvider client={queryClient}>
           <ThemeProvider>
             <AppContent />
           </ThemeProvider>
-        </Router>
+        </QueryClientProvider>
       </AuthProvider>
-    </QueryClientProvider>
+    </Router>
   );
 };
 
