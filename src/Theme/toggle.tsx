@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { useTheme } from "../Context/themeProvider";
+import { useTheme } from "../context/themeProvider";
 
 const ToggleContainer = styled.div`
   position: absolute;

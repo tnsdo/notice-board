@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -105,35 +106,33 @@ const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getUserFromLocalStorage = () => {
-      const userString = localStorage.getItem("user");
-      if (userString) {
-        const user = JSON.parse(userString);
-        setUserNickname(user.nickname);
-      }
-    };
+  const { data: user } = useQuery("user", () => {
+    const userString = localStorage.getItem("user");
+    return userString ? JSON.parse(userString) : null;
+  });
 
-    getUserFromLocalStorage();
+  const { data: boards = [] } = useQuery<Board[]>("boards", getBoard);
 
-    const fetchBoards = async () => {
-      try {
-        const boardResponse = await getBoard();
-        setBoards(boardResponse.list);
-      } catch (error) {
-        console.error("Failed to fetch boards:", error);
-      }
-    };
+  const postMutation = useMutation(
+    (postData: { boardId: string; data: any }) =>
+      writePost(postData.boardId, postData.data),
+    {
+      onSuccess: () => {
+        navigate(`/home`);
+      },
+      onError: (error: any) => {
+        console.error("Error creating post:", error);
+        if (error.response) {
+          console.error("Server response:", error.response.data);
+        }
+      },
+    },
+  );
 
-    fetchBoards();
-  }, []);
-
-  const handlePost = async () => {
+  const handlePost = () => {
     const tagArray = tags
       .split(",")
       .map((tag) => tag.trim())
@@ -145,16 +144,7 @@ const WritePost: React.FC = () => {
       tags: tagArray,
     };
 
-    try {
-      const response = await writePost(selectedBoardId, postData);
-      console.log("Post creation successful:", response);
-      navigate(`/home`);
-    } catch (error: any) {
-      console.error("Error creating post:", error);
-      if (error.response) {
-        console.error("Server response:", error.response.data);
-      }
-    }
+    postMutation.mutate({ boardId: selectedBoardId, data: postData });
   };
 
   return (
@@ -164,7 +154,7 @@ const WritePost: React.FC = () => {
         onChange={(e) => setSelectedBoardId(e.target.value)}
       >
         <option value="">Select Board</option>
-        {boards.map((board) => (
+        {boards.map((board: Board) => (
           <option key={board.id} value={board.id}>
             {board.title}
           </option>
@@ -177,7 +167,7 @@ const WritePost: React.FC = () => {
         onChange={(e) => setTitle(e.target.value)}
       />
       <UserInfo>
-        <div>{userNickname}</div>
+        <div>{user?.nickname}</div>
       </UserInfo>
       <BodyInput
         type="text"

@@ -3,7 +3,7 @@ import "../../App.css";
 import { useState } from "react";
 import styled from "styled-components";
 
-import { api } from "../../api/axios";
+import { signUp } from "../../api/user";
 
 const SignContainer = styled.div`
   width: 500px;
@@ -79,26 +79,17 @@ function SignUp() {
 
   const handleSignUp = async () => {
     try {
-      const response = await api.post("/auth/register", {
-        nickname,
-        email,
-        password,
-      });
-
-      if (response.status === 200) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            nickname,
-            email,
-          }),
-        );
-
-        alert("Sign up success!");
-      }
+      const userData = await signUp(email, password, nickname);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          nickname: userData.nickname,
+          email: userData.email,
+        }),
+      );
+      alert("Sign up success!");
     } catch (error) {
-      console.error("Sign up error:", error);
-      alert("Sign up error!");
+      console.error("Error:", error);
     }
   };
 

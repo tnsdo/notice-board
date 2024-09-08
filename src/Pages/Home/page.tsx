@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { useAuth } from "../../context/userContext";
 import GetBoard from "../Board/getBoard";
 import Post from "../post/allPost";
 
@@ -66,9 +67,10 @@ const Divider = styled.div`
 
 function Home() {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const handleSignOut = () => {
-    localStorage.removeItem("authToken");
+    signOut();
     window.location.href = "/";
   };
 

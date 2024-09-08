@@ -1,3 +1,17 @@
+export interface User {
+  email: string;
+  nickname: string;
+}
+
+export interface AuthContextType {
+  isAuthenticated: boolean;
+  user: User | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => void;
+}
+
 export interface Post {
   id: string;
   title: string;
