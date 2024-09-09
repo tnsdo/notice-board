@@ -80,14 +80,14 @@ function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
-  const { setToken, setUser, setIsAuthenticated } = useAuth();
+  const { setToken, setIsAuthenticated } = useAuth();
 
   const handleSignIn = async () => {
     try {
       const userData = await signIn(email, password);
+
       setToken(userData.accessToken);
       setIsAuthenticated(true);
-      setUser(userData.user);
       navigate("/home");
     } catch (error) {
       console.error("Error:", error);

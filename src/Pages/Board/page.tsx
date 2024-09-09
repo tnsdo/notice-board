@@ -123,7 +123,7 @@ const BoardPage = () => {
     fetchBoard();
   }, [boardUuid]);
 
-  const handleDeleteBoard = async (boardUuid: string) => {
+  const handleDeleteBoard = async () => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
         await deleteBoard(boardUuid as string);
@@ -156,7 +156,7 @@ const BoardPage = () => {
             </PostItem>
           ))}
 
-          <DeleteBoardButton onClick={() => handleDeleteBoard}>
+          <DeleteBoardButton onClick={handleDeleteBoard}>
             Delete Board
           </DeleteBoardButton>
         </BoardContainer>
