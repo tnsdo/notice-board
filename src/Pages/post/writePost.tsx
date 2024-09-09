@@ -118,20 +118,17 @@ const WritePost: React.FC = () => {
       return;
     }
 
-    const tagArray = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
-
     const postData = {
       title: title,
       body: content,
-      tags: tagArray,
+      tags: tags.split(",").map((tag) => tag.trim()),
+      //tag가 숫자면 하나여도 보이는데 문자로 하나만 있는 tag는 안됨 ,, 왜..?
     };
 
     try {
       const response = await writePost(selectedBoardId, postData);
       console.log("Post creation successful:", response);
+      alert("Post created!");
       navigate(`/home`);
     } catch (error: any) {
       console.error("Error creating post:", error);

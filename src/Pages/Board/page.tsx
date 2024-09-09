@@ -11,15 +11,16 @@ const BoardContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
 `;
 
 const BoardTitle = styled.div`
   font-size: 25px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 15px;
   text-align: left;
   color: ${({ theme }) => theme.text};
-  margin-top: 20px;
+
   margin-bottom: 10px;
 `;
 
@@ -143,7 +144,7 @@ const BoardPage = () => {
   return (
     <div>
       {postCount === 0 ? (
-        <div>No posts found.</div>
+        <BoardCreator>No posts found.</BoardCreator>
       ) : (
         <BoardContainer>
           <BoardTitle>{boardTitle}</BoardTitle>

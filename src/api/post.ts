@@ -21,6 +21,7 @@ export const writePost = async (
     title: string;
     body: string;
     tags: string[];
+    images?: { image: string; id: string }[];
   },
 ) => {
   try {
@@ -36,9 +37,13 @@ export const writePost = async (
   }
 };
 
-export const postImage = async (id: string) => {
+export const postImage = async (boardUuid: string, formData: FormData) => {
   try {
-    const response = await api.post(`posts/${id}/image`);
+    const response = await api.post(`posts/${boardUuid}/image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     console.error("Error in postImage:", error);

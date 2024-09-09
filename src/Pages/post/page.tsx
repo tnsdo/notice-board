@@ -125,19 +125,20 @@ function Board() {
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>
-      <Img>
-        {post.images && post.images.length > 0 && (
+      {post.images && post.images.length > 0 ? (
+        <Img>
           <img
             src={`data:image/png;base64,${post.images[0].image}`}
             alt="Post Image"
           />
-        )}
-      </Img>
+        </Img>
+      ) : null}
       <Tags>
         Tags [
         {post.tags.map((tag) => (
           <Tag key={tag}>{tag},</Tag>
-        ))}
+        ))}{" "}
+        ]
       </Tags>
 
       <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
