@@ -15,7 +15,7 @@ api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${accessToken}`; // accessToken을 항상 헤더에 추가
     }
     return config;
   },
@@ -29,8 +29,7 @@ api.interceptors.response.use(
     if (data.resultCode === 0) {
       return response;
     } else if (data.resultCode === 1001) {
-      // accessToken 만료 시 처리 생략
-      return response; // 그냥 응답을 반환
+      return response;
     } else if (data.resultCode === 1002) {
       alert("인증이 만료되었습니다. 다시 로그인해주세요.");
       localStorage.clear();

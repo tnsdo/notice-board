@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteBoard } from "src/api/board";
+import { api } from "src/api/axios";
 import styled from "styled-components";
 
 import { getPostsByBoard } from "../../api/post";
 import { Post } from "../../type";
+
+const Display = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 const BoardContainer = styled.div`
   display: flex;
@@ -127,7 +134,12 @@ const BoardPage = () => {
   const handleDeleteBoard = async () => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
-        await deleteBoard(boardUuid as string);
+        if (posts.length > 0) {
+          for (const post of posts) {
+            await api.delete(`/posts/${post.id}`);
+          }
+        }
+        await api.delete(`/boards/${boardUuid}`);
         alert("Board deleted successfully");
         navigate("/home");
       } catch (error) {
@@ -142,7 +154,7 @@ const BoardPage = () => {
   };
 
   return (
-    <div>
+    <Display>
       {postCount === 0 ? (
         <BoardCreator>No posts found.</BoardCreator>
       ) : (
@@ -156,13 +168,12 @@ const BoardPage = () => {
               <User>{post.createdBy.nickname}</User>
             </PostItem>
           ))}
-
-          <DeleteBoardButton onClick={handleDeleteBoard}>
-            Delete Board
-          </DeleteBoardButton>
         </BoardContainer>
       )}
-    </div>
+      <DeleteBoardButton onClick={handleDeleteBoard}>
+        Delete Board
+      </DeleteBoardButton>
+    </Display>
   );
 };
 

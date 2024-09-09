@@ -22,10 +22,13 @@ export const signIn = async (email: string, password: string) => {
   return response.data;
 };
 
-export const refresh = async (refreshToken: string) => {
+export const refresh = async () => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) throw new Error("No refresh token available");
+
   const response = await api.post(
     "/auth/refresh",
-    {},
+    { refreshToken },
     {
       headers: {
         Authorization: `Bearer ${refreshToken}`,

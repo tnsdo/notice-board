@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "src/api/axios";
 import styled from "styled-components";
 
 import { getBoard } from "../../api/board";
-import { postImage, writePost } from "../../api/post";
+import { writePost } from "../../api/post";
 import { Board } from "../../type";
 
 const InputContainer = styled.div`
@@ -97,6 +98,23 @@ const FileInput = styled.input`
   margin-top: 10px;
 `;
 
+const ImagePreview = styled.div`
+  margin-top: 10px;
+  width: 500px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+`;
+
 const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -104,6 +122,7 @@ const WritePost: React.FC = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -134,19 +153,34 @@ const WritePost: React.FC = () => {
 
     try {
       const response = await writePost(selectedBoardId, postData);
+      const postId = response.id; // 게시물 작성 후 postId 가져오기
 
+      // 이미지가 있을 경우에만 이미지 업로드 처리
       if (image) {
-        await postImage(selectedBoardId, image);
+        const formData = new FormData();
+        formData.append("file", image); // 이미지를 FormData에 추가
+
+        // 이미지 업로드 API 요청
+        await api.post(`/posts/${postId}/image`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // 파일 전송 시 사용
+          },
+        });
       }
 
       console.log("Post creation successful:", response);
       alert("Post created!");
       navigate(`/home`);
     } catch (error: any) {
-      console.error("Error creating post:", error);
-      if (error.response) {
-        console.error("Server response:", error.response.data);
-      }
+      console.error("Error during post creation or image upload:", error);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -181,15 +215,12 @@ const WritePost: React.FC = () => {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <FileInput
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          if (e.target.files) {
-            setImage(e.target.files[0]);
-          }
-        }}
-      />
+      <FileInput type="file" accept="image/*" onChange={handleImageChange} />
+      {previewUrl && (
+        <ImagePreview>
+          <img src={previewUrl} alt="Image Preview" />
+        </ImagePreview>
+      )}
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>
   );

@@ -45,18 +45,10 @@ const CreateBoard: React.FC = () => {
     try {
       const response = await createBoard(title);
       console.log("Board Created:", response);
+      alert("Board Created!");
       navigate(`/home`);
     } catch (error: any) {
       console.error("Error:", error);
-      if (error.response && error.response.status === 403) {
-        alert("Check your login status");
-        navigate("/signin");
-      } else if (error.message === "Access token expired") {
-        alert(error.message);
-        navigate("/signin");
-      } else {
-        alert("Error occurred");
-      }
     }
   };
 

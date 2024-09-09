@@ -61,6 +61,26 @@ const Tag = styled.span`
   text-align: left;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const EditButton = styled.button`
+  border-radius: 0;
+  border-color: ${({ theme }) => theme.buttonBorder};
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.text};
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-right: auto;
+`;
+
 const DeleteButton = styled.button`
   border-radius: 0;
   border-color: ${({ theme }) => theme.buttonBorder};
@@ -81,8 +101,8 @@ const Img = styled.div`
   overflow: hidden;
   img {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -98,7 +118,6 @@ function Board() {
     queryKey: ["post", id],
     queryFn: () =>
       api.get<Post>(`/posts/${id}`).then((res) => {
-        console.log(res.data);
         return res.data;
       }),
   });
@@ -110,6 +129,10 @@ function Board() {
   const handleDelete = async () => {
     if (window.confirm("Do you want to delete this post?")) {
       try {
+        const imageId = post.images[0]?.id;
+        if (imageId) {
+          await api.delete(`/posts/${id}/image/${imageId}`);
+        }
         await api.delete(`/posts/${id}`);
         alert("Post deleted");
         navigate("/home");
@@ -140,8 +163,10 @@ function Board() {
         ))}{" "}
         ]
       </Tags>
-
-      <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+      <ButtonContainer>
+        <EditButton>Edit</EditButton>
+        <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+      </ButtonContainer>
     </Container>
   );
 }

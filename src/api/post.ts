@@ -21,7 +21,6 @@ export const writePost = async (
     title: string;
     body: string;
     tags: string[];
-    images?: { image: string; id: string }[];
   },
 ) => {
   try {
@@ -33,23 +32,6 @@ export const writePost = async (
     return response.data;
   } catch (error) {
     console.error("Error in writePost:", error);
-    throw error;
-  }
-};
-
-export const postImage = async (boardUuid: string, image: File) => {
-  try {
-    const formData = new FormData();
-    formData.append("image", image);
-
-    const response = await api.post(`posts/${boardUuid}/image`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error in postImage:", error);
     throw error;
   }
 };
