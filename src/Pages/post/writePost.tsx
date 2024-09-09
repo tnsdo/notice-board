@@ -98,6 +98,23 @@ const FileInput = styled.input`
   margin-top: 10px;
 `;
 
+const ImagePreview = styled.div`
+  margin-top: 10px;
+  width: 500px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+`;
+
 const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -105,6 +122,7 @@ const WritePost: React.FC = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -158,6 +176,14 @@ const WritePost: React.FC = () => {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <InputContainer>
       <BoardSelect
@@ -189,15 +215,12 @@ const WritePost: React.FC = () => {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <FileInput
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          if (e.target.files) {
-            setImage(e.target.files[0]);
-          }
-        }}
-      />
+      <FileInput type="file" accept="image/*" onChange={handleImageChange} />
+      {previewUrl && (
+        <ImagePreview>
+          <img src={previewUrl} alt="Image Preview" />
+        </ImagePreview>
+      )}
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>
   );
