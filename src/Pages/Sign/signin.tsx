@@ -80,13 +80,15 @@ function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
-  const { setToken, setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated } = useAuth();
 
   const handleSignIn = async () => {
     try {
       const userData = await signIn(email, password);
+      localStorage.setItem("accessToken", userData.accessToken);
+      localStorage.setItem("refreshToken", userData.refreshToken);
+      localStorage.setItem("expiresIn", userData.expiresIn.toString());
 
-      setToken(userData.accessToken);
       setIsAuthenticated(true);
       navigate("/home");
     } catch (error) {

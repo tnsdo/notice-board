@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { getBoard } from "../../api/board";
-import { writePost } from "../../api/post";
+import { postImage, writePost } from "../../api/post";
 import { Board } from "../../type";
 
 const InputContainer = styled.div`
@@ -91,12 +91,19 @@ const BoardSelect = styled.select`
   }
 `;
 
+const FileInput = styled.input`
+  width: 500px;
+  height: 40px;
+  margin-top: 10px;
+`;
+
 const WritePost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -127,6 +134,11 @@ const WritePost: React.FC = () => {
 
     try {
       const response = await writePost(selectedBoardId, postData);
+
+      if (image) {
+        await postImage(selectedBoardId, image);
+      }
+
       console.log("Post creation successful:", response);
       alert("Post created!");
       navigate(`/home`);
@@ -168,6 +180,15 @@ const WritePost: React.FC = () => {
         placeholder="Write Tag Here(divide by comma)"
         value={tags}
         onChange={(e) => setTags(e.target.value)}
+      />
+      <FileInput
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          if (e.target.files) {
+            setImage(e.target.files[0]);
+          }
+        }}
       />
       <Post onClick={handlePost}>Post</Post>
     </InputContainer>

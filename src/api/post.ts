@@ -37,14 +37,17 @@ export const writePost = async (
   }
 };
 
-export const postImage = async (boardUuid: string, formData: FormData) => {
+export const postImage = async (boardUuid: string, image: File) => {
   try {
+    const formData = new FormData();
+    formData.append("image", image);
+
     const response = await api.post(`posts/${boardUuid}/image`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error in postImage:", error);
     throw error;

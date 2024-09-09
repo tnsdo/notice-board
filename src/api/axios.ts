@@ -4,8 +4,6 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { refresh } from "./user";
-
 export const api = axios.create({
   baseURL: "/local",
   headers: {
@@ -31,30 +29,8 @@ api.interceptors.response.use(
     if (data.resultCode === 0) {
       return response;
     } else if (data.resultCode === 1001) {
-      const originalRequest = response.config as InternalAxiosRequestConfig & {
-        _retry?: boolean;
-      };
-      if (!originalRequest._retry) {
-        originalRequest._retry = true;
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (refreshToken) {
-          try {
-            const refreshResponse = await refresh(refreshToken);
-            const newAccessToken = refreshResponse.resultData?.accessToken;
-            if (newAccessToken) {
-              localStorage.setItem("accessToken", newAccessToken);
-              api.defaults.headers.common["Authorization"] =
-                `Bearer ${newAccessToken}`;
-              return api(originalRequest);
-            }
-          } catch (refreshError) {
-            console.error("Failed to refresh token:", refreshError);
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            window.location.href = "/signin";
-          }
-        }
-      }
+      // accessToken 만료 시 처리 생략
+      return response; // 그냥 응답을 반환
     } else if (data.resultCode === 1002) {
       alert("인증이 만료되었습니다. 다시 로그인해주세요.");
       localStorage.clear();
