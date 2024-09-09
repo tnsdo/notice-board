@@ -98,7 +98,7 @@ function Board() {
         alert("Post deleted");
         navigate("/home");
       } catch (error) {
-        console.error("게시물 삭제 실패:", error);
+        console.error("Failed to delete post:", error);
       }
     }
   };

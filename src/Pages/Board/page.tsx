@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { deleteBoard, getBoard } from "../../api/board";
+import { api } from "../../api/axios";
 import { getPostsByBoard } from "../../api/post";
-import { useAuth } from "../../context/userContext";
-import { Board, Post } from "../../type";
+import { Post } from "../../type";
 
 const BoardContainer = styled.div`
   display: flex;
@@ -97,9 +96,8 @@ const BoardPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postCount, setPostCount] = useState<number>(0);
   const [boardTitle, setBoardTitle] = useState<string>("");
-  const [board, setBoard] = useState<Board | null>(null);
-  const [currentBoard, setCurrentBoard] = useState<Board | null>(null);
-  const { token, setIsAuthenticated } = useAuth();
+  const [boardCreator, setBoardCreator] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBoard = async () => {
@@ -108,14 +106,27 @@ const BoardPage = () => {
         return;
       }
       try {
-        const boardsData = await getBoard();
-        setBoard(boardsData);
-        setCurrentBoard(boardsData.list[0]);
-        setBoardTitle(boardsData.list[0].title);
-
         const postsData = await getPostsByBoard(boardUuid);
-        setPosts(postsData.list);
-        setPostCount(postsData.count);
+        console.log(postsData);
+        setPosts(postsData.list || []);
+        setPostCount(postsData.count || 0);
+
+        if (postsData.board) {
+          setBoardTitle(postsData.board.title);
+          setBoardCreator(postsData.board.creator?.nickname || "Unknown");
+        } else if (
+          postsData.list &&
+          postsData.list.length > 0 &&
+          postsData.list[0].board
+        ) {
+          const boardInfo = postsData.list[0].board;
+          setBoardTitle(boardInfo.title);
+          setBoardCreator(boardInfo.creator?.nickname || "Unknown");
+        } else {
+          console.error("Board information not found in the response");
+          setBoardTitle("Unknown Board");
+          setBoardCreator("Unknown Creator");
+        }
       } catch (error) {
         console.error("Error in fetchBoardAndPosts:", error);
       }
@@ -124,22 +135,18 @@ const BoardPage = () => {
     fetchBoard();
   }, [boardUuid]);
 
-  const handleDeleteBoard = async (boardUuid: string) => {
+  const handleDeleteBoard = async () => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
-        await deleteBoard(boardUuid as string);
+        await api.delete(`/boards/${boardUuid}`);
         alert("Board deleted successfully");
-        window.location.href = "/home";
+        navigate("/home");
       } catch (error) {
         console.error("Error in handleDeleteBoard:", error);
         alert("Failed to delete board.");
       }
     }
   };
-
-  useEffect(() => {
-    setIsAuthenticated(!!token);
-  }, [token, setIsAuthenticated]);
 
   return (
     <div>
@@ -148,23 +155,18 @@ const BoardPage = () => {
       ) : (
         <BoardContainer>
           <BoardTitle>{boardTitle}</BoardTitle>
-          <BoardCreator>
-            created by {currentBoard?.creator.nickname}
-          </BoardCreator>
+          <BoardCreator>created by {boardCreator}</BoardCreator>
           {posts.map((post) => (
-            <Link to={`/post/${post.id}`} key={post.id}>
-              <PostItem key={post.id} to={`/post/${post.id}`}>
-                <PostTitle>{post.title}</PostTitle>
-                <PostBody>{post.body}</PostBody>
-                <User>{post.createdBy.nickname}</User>
-              </PostItem>
-            </Link>
+            <PostItem key={post.id} to={`/post/${post.id}`}>
+              <PostTitle>{post.title}</PostTitle>
+              <PostBody>{post.body}</PostBody>
+              <User>{post.createdBy.nickname}</User>
+            </PostItem>
           ))}
-          {board && (
-            <DeleteBoardButton onClick={() => handleDeleteBoard(board.id)}>
-              Delete Board
-            </DeleteBoardButton>
-          )}
+
+          <DeleteBoardButton onClick={handleDeleteBoard}>
+            Delete Board
+          </DeleteBoardButton>
         </BoardContainer>
       )}
     </div>
