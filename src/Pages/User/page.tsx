@@ -47,6 +47,8 @@ const CurrentPWContainer = styled.div`
 const CurrentPW = styled.input`
   margin-bottom: 10px;
   margin-left: 10px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const NewPWContainer = styled.div`
@@ -61,6 +63,8 @@ const NewPWContainer = styled.div`
 const NewPW = styled.input`
   margin-bottom: 10px;
   margin-left: 10px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const SaveButton = styled.button`

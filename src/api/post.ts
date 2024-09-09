@@ -10,6 +10,11 @@ export const getPostsByBoard = async (boardUuid: string) => {
   return response.data;
 };
 
+export const getPostsById = async (id: string) => {
+  const response = await api.delete(`/posts/${id}`);
+  return response.data;
+};
+
 export const writePost = async (
   boardUuid: string,
   postData: {
@@ -27,6 +32,16 @@ export const writePost = async (
     return response.data;
   } catch (error) {
     console.error("Error in writePost:", error);
+    throw error;
+  }
+};
+
+export const postImage = async (id: string) => {
+  try {
+    const response = await api.post(`posts/${id}/image`);
+    return response;
+  } catch (error) {
+    console.error("Error in postImage:", error);
     throw error;
   }
 };

@@ -74,6 +74,18 @@ const DeleteButton = styled.button`
   margin-left: auto;
 `;
 
+const Img = styled.div`
+  width: 500px;
+  height: 300px;
+  margin-top: 10px;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+`;
+
 function Board() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -84,7 +96,11 @@ function Board() {
     error,
   } = useQuery({
     queryKey: ["post", id],
-    queryFn: () => api.get<Post>(`/posts/${id}`).then((res) => res.data),
+    queryFn: () =>
+      api.get<Post>(`/posts/${id}`).then((res) => {
+        console.log(res.data);
+        return res.data;
+      }),
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -109,13 +125,21 @@ function Board() {
       <Title>{post.title}</Title>
       <UserId>Written by {post.createdBy.nickname}</UserId>
       <Body>{post.body}</Body>
+      <Img>
+        {post.images && post.images.length > 0 && (
+          <img
+            src={`data:image/png;base64,${post.images[0].image}`}
+            alt="Post Image"
+          />
+        )}
+      </Img>
       <Tags>
         Tags [
         {post.tags.map((tag) => (
           <Tag key={tag}>{tag},</Tag>
         ))}
-        ]
       </Tags>
+
       <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
     </Container>
   );

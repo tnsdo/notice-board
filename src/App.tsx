@@ -62,6 +62,7 @@ const AppContent: React.FC = () => {
     } else {
       navigate("/");
     }
+    //이거 왜 작동을 안하지..
   };
 
   return (
