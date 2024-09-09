@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { deleteBoard } from "src/api/board";
 import styled from "styled-components";
 
-import { api } from "../../api/axios";
 import { getPostsByBoard } from "../../api/post";
 import { Post } from "../../type";
 
@@ -32,7 +31,7 @@ const BoardCreator = styled.div`
   color: ${({ theme }) => theme.text};
   margin-top: 5px;
 `;
-const PostItem = styled(Link)`
+const PostItem = styled.div`
   background-color: ${({ theme }) => theme.signContainer};
   height: auto;
   height: 80px;
@@ -45,6 +44,7 @@ const PostItem = styled(Link)`
   list-style: none;
   text-decoration: none;
   display: block;
+  cursor: pointer;
 `;
 
 const PostTitle = styled.div`
@@ -107,25 +107,13 @@ const BoardPage = () => {
       }
       try {
         const postsData = await getPostsByBoard(boardUuid);
-        console.log(postsData);
-        setPosts(postsData.list || []);
-        setPostCount(postsData.count || 0);
+        setPosts(postsData.list);
+        setPostCount(postsData.count);
 
-        if (postsData.board) {
-          setBoardTitle(postsData.board.title);
-          setBoardCreator(postsData.board.creator?.nickname || "Unknown");
-        } else if (
-          postsData.list &&
-          postsData.list.length > 0 &&
-          postsData.list[0].board
-        ) {
+        if (postsData.list.length > 0) {
           const boardInfo = postsData.list[0].board;
           setBoardTitle(boardInfo.title);
-          setBoardCreator(boardInfo.creator?.nickname || "Unknown");
-        } else {
-          console.error("Board information not found in the response");
-          setBoardTitle("Unknown Board");
-          setBoardCreator("Unknown Creator");
+          setBoardCreator(boardInfo.creator.nickname);
         }
       } catch (error) {
         console.error("Error in fetchBoardAndPosts:", error);
@@ -135,10 +123,10 @@ const BoardPage = () => {
     fetchBoard();
   }, [boardUuid]);
 
-  const handleDeleteBoard = async () => {
+  const handleDeleteBoard = async (boardUuid: string) => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
-        await api.delete(`/boards/${boardUuid}`);
+        await deleteBoard(boardUuid as string);
         alert("Board deleted successfully");
         navigate("/home");
       } catch (error) {
@@ -146,6 +134,10 @@ const BoardPage = () => {
         alert("Failed to delete board.");
       }
     }
+  };
+
+  const handlePostClick = (postId: string) => {
+    navigate(`/post/${postId}`);
   };
 
   return (
@@ -157,14 +149,14 @@ const BoardPage = () => {
           <BoardTitle>{boardTitle}</BoardTitle>
           <BoardCreator>created by {boardCreator}</BoardCreator>
           {posts.map((post) => (
-            <PostItem key={post.id} to={`/post/${post.id}`}>
+            <PostItem key={post.id} onClick={() => handlePostClick(post.id)}>
               <PostTitle>{post.title}</PostTitle>
               <PostBody>{post.body}</PostBody>
               <User>{post.createdBy.nickname}</User>
             </PostItem>
           ))}
 
-          <DeleteBoardButton onClick={handleDeleteBoard}>
+          <DeleteBoardButton onClick={() => handleDeleteBoard}>
             Delete Board
           </DeleteBoardButton>
         </BoardContainer>
