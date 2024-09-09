@@ -80,13 +80,13 @@ function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
-  const { setAccessToken, setUser, setRefreshToken } = useAuth();
+  const { setToken, setUser, setIsAuthenticated } = useAuth();
 
   const handleSignIn = async () => {
     try {
       const userData = await signIn(email, password);
-      setAccessToken(userData.accessToken);
-      setRefreshToken(userData.refreshToken);
+      setToken(userData.accessToken);
+      setIsAuthenticated(true);
       setUser(userData.user);
       navigate("/home");
     } catch (error) {

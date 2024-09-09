@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { deleteBoard } from "../../api/board";
+import { deleteBoard, getBoard } from "../../api/board";
 import { getPostsByBoard } from "../../api/post";
-import { Post } from "../../type";
+import { useAuth } from "../../context/userContext";
+import { Board, Post } from "../../type";
+
 const BoardContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,6 +23,15 @@ const BoardTitle = styled.div`
   color: ${({ theme }) => theme.text};
   margin-top: 20px;
   margin-bottom: 10px;
+`;
+
+const BoardCreator = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: left;
+  color: ${({ theme }) => theme.text};
+  margin-top: 5px;
 `;
 const PostItem = styled(Link)`
   background-color: ${({ theme }) => theme.signContainer};
@@ -86,31 +97,38 @@ const BoardPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postCount, setPostCount] = useState<number>(0);
   const [boardTitle, setBoardTitle] = useState<string>("");
+  const [board, setBoard] = useState<Board | null>(null);
+  const [currentBoard, setCurrentBoard] = useState<Board | null>(null);
+  const { token, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchBoard = async () => {
       if (!boardUuid) {
         console.error("boardUuid is not defined.");
         return;
       }
       try {
-        const data = await getPostsByBoard(boardUuid);
-        setPosts(data.list);
-        setPostCount(data.count);
-        if (data.list.length > 0) {
-          setBoardTitle(data.list[0].board.title);
-        }
+        const boardsData = await getBoard();
+        setBoard(boardsData);
+        setCurrentBoard(boardsData.list[0]);
+        setBoardTitle(boardsData.list[0].title);
+
+        const postsData = await getPostsByBoard(boardUuid);
+        setPosts(postsData.list);
+        setPostCount(postsData.count);
       } catch (error) {
-        console.error("Error in fetchPosts:", error);
+        console.error("Error in fetchBoardAndPosts:", error);
       }
     };
-    fetchPosts();
+
+    fetchBoard();
   }, [boardUuid]);
 
-  const handleDeleteBoard = async () => {
+  const handleDeleteBoard = async (boardUuid: string) => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
         await deleteBoard(boardUuid as string);
+        alert("Board deleted successfully");
         window.location.href = "/home";
       } catch (error) {
         console.error("Error in handleDeleteBoard:", error);
@@ -119,6 +137,10 @@ const BoardPage = () => {
     }
   };
 
+  useEffect(() => {
+    setIsAuthenticated(!!token);
+  }, [token, setIsAuthenticated]);
+
   return (
     <div>
       {postCount === 0 ? (
@@ -126,6 +148,9 @@ const BoardPage = () => {
       ) : (
         <BoardContainer>
           <BoardTitle>{boardTitle}</BoardTitle>
+          <BoardCreator>
+            created by {currentBoard?.creator.nickname}
+          </BoardCreator>
           {posts.map((post) => (
             <Link to={`/post/${post.id}`} key={post.id}>
               <PostItem key={post.id} to={`/post/${post.id}`}>
@@ -135,9 +160,11 @@ const BoardPage = () => {
               </PostItem>
             </Link>
           ))}
-          <DeleteBoardButton onClick={handleDeleteBoard}>
-            Delete Board
-          </DeleteBoardButton>
+          {board && (
+            <DeleteBoardButton onClick={() => handleDeleteBoard(board.id)}>
+              Delete Board
+            </DeleteBoardButton>
+          )}
         </BoardContainer>
       )}
     </div>

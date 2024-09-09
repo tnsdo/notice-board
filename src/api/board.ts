@@ -31,18 +31,19 @@ export const createBoard = async (title: string) => {
 
 export const deleteBoard = async (boardUuid: string) => {
   const token = localStorage.getItem("accessToken");
-
   if (!token) {
-    throw new Error("Access token expired");
+    throw new Error("액세스 토큰이 없습니다.");
   }
 
-  const response = await api.delete(`/boards/${boardUuid}`, {
-    params: {
-      boardUuid,
-    },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+  try {
+    const response = await api.delete(`/boards/${boardUuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("게시판 삭제 중 오류:", error);
+    throw error;
+  }
 };

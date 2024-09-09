@@ -3,13 +3,13 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 import { User } from "../type";
 
 interface AuthContextType {
-  accessToken: string | null;
-  setAccessToken: (token: string | null) => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
   signOut: () => void;
   isAuthenticated: boolean;
   user: User | null;
   setUser: (user: User | null) => void;
-  setRefreshToken: (token: string) => void;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,47 +33,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUserState] = useState<User | null>(() =>
     JSON.parse(localStorage.getItem("userInfo") || "null"),
   );
-  const [, setRefreshTokenState] = useState<string | null>(() =>
-    localStorage.getItem("refreshToken"),
-  );
+  const [isAuthenticated, setIsAuthenticated] =
+    useState<boolean>(!!accessToken);
 
-  const setAccessToken = (newAccessToken: string | null) => {
-    if (newAccessToken) {
-      localStorage.setItem("accessToken", newAccessToken);
+  const setToken = (newToken: string | null) => {
+    if (newToken) {
+      localStorage.setItem("accessToken", newToken);
     } else {
       localStorage.removeItem("accessToken");
     }
-    setAccessTokenState(newAccessToken);
+    setAccessTokenState(newToken);
   };
 
   const setUser = (newUser: User | null) => {
     setUserState(newUser);
   };
 
-  const setRefreshToken = (newRefreshToken: string | null) => {
-    if (newRefreshToken) {
-      localStorage.setItem("refreshToken", newRefreshToken);
-    } else {
-      localStorage.removeItem("refreshToken");
-    }
-    setRefreshTokenState(newRefreshToken);
-  };
-
   const signOut = () => {
-    setAccessToken(null);
-    localStorage.removeItem("accessToken");
+    setToken(null);
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userInfo");
   };
 
   const value: AuthContextType = {
-    accessToken,
-    setAccessToken,
+    token: accessToken,
+    setToken,
     signOut,
-    isAuthenticated: !!accessToken,
+    isAuthenticated,
+    setIsAuthenticated,
     user,
     setUser,
-    setRefreshToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

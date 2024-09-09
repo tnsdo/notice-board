@@ -1,7 +1,6 @@
 import "./App.css";
 
 import { QueryClientProvider } from "@tanstack/react-query";
-import queryClient from "./api/query";
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -11,6 +10,7 @@ import {
 } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
+import queryClient from "./api/query";
 import { ThemeProvider } from "./context/themeProvider.tsx";
 import { AuthProvider, useAuth } from "./context/userContext.tsx";
 import CreateBoard from "./Pages/Board/createBoard.tsx";
