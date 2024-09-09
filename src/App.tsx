@@ -62,6 +62,7 @@ const AppContent: React.FC = () => {
     } else {
       navigate("/");
     }
+    //이거 왜 작동을 안하지..
   };
 
   return (
@@ -100,15 +101,15 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
             <AppContent />
           </ThemeProvider>
         </QueryClientProvider>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

@@ -1,8 +1,5 @@
-import React from "react";
-import { useAuth } from "src/context/userContext";
+import React, { useState } from "react";
 import styled from "styled-components";
-
-import profile from "../../assets/profile.png";
 
 const UserContainer = styled.div`
   width: 400px;
@@ -18,6 +15,7 @@ const Divider = styled.div`
   font-size: 20px;
   font-weight: 700;
   text-align: left;
+  margin-top: 5px;
   margin-bottom: 20px;
   margin-right: auto;
 `;
@@ -29,20 +27,6 @@ const DividerLine = styled.div`
   margin-bottom: 20px;
 `;
 
-const ProfileImageContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const UserProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 15px;
-`;
-
 const UserInfoBox = styled.div`
   color: ${({ theme }) => theme.text};
   font-size: 20px;
@@ -52,13 +36,35 @@ const UserInfoBox = styled.div`
   margin-right: auto;
 `;
 
-const Nickname = styled.div`
-  margin-bottom: 10px;
+const CurrentPWContainer = styled.div`
+  font-size: 20px;
+  color: ${({ theme }) => theme.text};
+  margin-top: 10px;
+  padding-right: 60px;
+  width: 400px;
 `;
 
-const Email = styled.div`
+const CurrentPW = styled.input`
   margin-bottom: 10px;
-  margin-left: 33px;
+  margin-left: 10px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
+`;
+
+const NewPWContainer = styled.div`
+  font-size: 20px;
+  color: ${({ theme }) => theme.text};
+  margin-top: 10px;
+  padding-right: 60px;
+  width: 400px;
+  margin-left: 27px;
+`;
+
+const NewPW = styled.input`
+  margin-bottom: 10px;
+  margin-left: 10px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  color: ${({ theme }) => theme.text};
 `;
 
 const SaveButton = styled.button`
@@ -73,24 +79,29 @@ const SaveButton = styled.button`
 `;
 
 const UserInfo: React.FC = () => {
-  // 유저 정보가 안가져와지는 이유?
-  const { user } = useAuth();
-  //무한 로딩중임
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  const [currentPW, setCurrentPW] = useState("");
+  const [newPW, setNewPW] = useState("");
 
   return (
     <UserContainer>
-      <Divider>Profile</Divider>
-      <ProfileImageContainer>
-        <UserProfileImage src={profile} alt="profile" />
-      </ProfileImageContainer>
-      <DividerLine />
-      <Divider>Info</Divider>
+      <Divider>Change PW</Divider>
       <UserInfoBox>
-        <Nickname>Nickname: {user.nickname}</Nickname>
-        <Email>E-mail: {user.email}</Email>
+        <CurrentPWContainer>
+          Current Password:
+          <CurrentPW
+            type="text"
+            value={currentPW}
+            onChange={(e) => setCurrentPW(e.target.value)}
+          />
+        </CurrentPWContainer>
+        <NewPWContainer>
+          New Password:
+          <NewPW
+            type="text"
+            value={newPW}
+            onChange={(e) => setNewPW(e.target.value)}
+          />
+        </NewPWContainer>
       </UserInfoBox>
       <DividerLine />
       <SaveButton>Save</SaveButton>
