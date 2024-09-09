@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useAuth } from "src/context/userContext";
 import styled from "styled-components";
 
 import profile from "../../assets/profile.png";
@@ -72,19 +73,9 @@ const SaveButton = styled.button`
 `;
 
 const UserInfo: React.FC = () => {
-  const [user, setUser] = useState<{
-    nickname: string;
-    email: string;
-    profileImage: string;
-  } | null>(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("userInfo");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
+  // 유저 정보가 안가져와지는 이유?
+  const { user } = useAuth();
+  //무한 로딩중임
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -93,7 +84,7 @@ const UserInfo: React.FC = () => {
     <UserContainer>
       <Divider>Profile</Divider>
       <ProfileImageContainer>
-        <UserProfileImage src={user.profileImage || profile} alt="profile" />
+        <UserProfileImage src={profile} alt="profile" />
       </ProfileImageContainer>
       <DividerLine />
       <Divider>Info</Divider>

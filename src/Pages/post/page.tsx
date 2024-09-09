@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { api } from "../../api/axios";
@@ -61,8 +61,22 @@ const Tag = styled.span`
   text-align: left;
 `;
 
+const DeleteButton = styled.button`
+  border-radius: 0;
+  border-color: ${({ theme }) => theme.buttonBorder};
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.text};
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-left: auto;
+`;
+
 function Board() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const {
     data: post,
@@ -77,6 +91,18 @@ function Board() {
   if (error) return <div>Failed to load posts.</div>;
   if (!post) return <div>No posts found.</div>;
 
+  const handleDelete = async () => {
+    if (window.confirm("Do you want to delete this post?")) {
+      try {
+        await api.delete(`/posts/${id}`);
+        alert("Post deleted");
+        navigate("/home");
+      } catch (error) {
+        console.error("Failed to delete post:", error);
+      }
+    }
+  };
+
   return (
     <Container>
       <BoardTitle>{post.board.title}</BoardTitle>
@@ -90,6 +116,7 @@ function Board() {
         ))}
         ]
       </Tags>
+      <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
     </Container>
   );
 }

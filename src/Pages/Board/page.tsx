@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { deleteBoard } from "../../api/board";
+import { api } from "../../api/axios";
 import { getPostsByBoard } from "../../api/post";
 import { Post } from "../../type";
+
 const BoardContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,6 +22,15 @@ const BoardTitle = styled.div`
   color: ${({ theme }) => theme.text};
   margin-top: 20px;
   margin-bottom: 10px;
+`;
+
+const BoardCreator = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: left;
+  color: ${({ theme }) => theme.text};
+  margin-top: 5px;
 `;
 const PostItem = styled(Link)`
   background-color: ${({ theme }) => theme.signContainer};
@@ -86,32 +96,51 @@ const BoardPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postCount, setPostCount] = useState<number>(0);
   const [boardTitle, setBoardTitle] = useState<string>("");
+  const [boardCreator, setBoardCreator] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchBoard = async () => {
       if (!boardUuid) {
         console.error("boardUuid is not defined.");
         return;
       }
       try {
-        const data = await getPostsByBoard(boardUuid);
-        setPosts(data.list);
-        setPostCount(data.count);
-        if (data.list.length > 0) {
-          setBoardTitle(data.list[0].board.title);
+        const postsData = await getPostsByBoard(boardUuid);
+        console.log(postsData);
+        setPosts(postsData.list || []);
+        setPostCount(postsData.count || 0);
+
+        if (postsData.board) {
+          setBoardTitle(postsData.board.title);
+          setBoardCreator(postsData.board.creator?.nickname || "Unknown");
+        } else if (
+          postsData.list &&
+          postsData.list.length > 0 &&
+          postsData.list[0].board
+        ) {
+          const boardInfo = postsData.list[0].board;
+          setBoardTitle(boardInfo.title);
+          setBoardCreator(boardInfo.creator?.nickname || "Unknown");
+        } else {
+          console.error("Board information not found in the response");
+          setBoardTitle("Unknown Board");
+          setBoardCreator("Unknown Creator");
         }
       } catch (error) {
-        console.error("Error in fetchPosts:", error);
+        console.error("Error in fetchBoardAndPosts:", error);
       }
     };
-    fetchPosts();
+
+    fetchBoard();
   }, [boardUuid]);
 
   const handleDeleteBoard = async () => {
     if (window.confirm("Do you want to delete this board?")) {
       try {
-        await deleteBoard(boardUuid as string);
-        window.location.href = "/home";
+        await api.delete(`/boards/${boardUuid}`);
+        alert("Board deleted successfully");
+        navigate("/home");
       } catch (error) {
         console.error("Error in handleDeleteBoard:", error);
         alert("Failed to delete board.");
@@ -126,15 +155,15 @@ const BoardPage = () => {
       ) : (
         <BoardContainer>
           <BoardTitle>{boardTitle}</BoardTitle>
+          <BoardCreator>created by {boardCreator}</BoardCreator>
           {posts.map((post) => (
-            <Link to={`/post/${post.id}`} key={post.id}>
-              <PostItem key={post.id} to={`/post/${post.id}`}>
-                <PostTitle>{post.title}</PostTitle>
-                <PostBody>{post.body}</PostBody>
-                <User>{post.createdBy.nickname}</User>
-              </PostItem>
-            </Link>
+            <PostItem key={post.id} to={`/post/${post.id}`}>
+              <PostTitle>{post.title}</PostTitle>
+              <PostBody>{post.body}</PostBody>
+              <User>{post.createdBy.nickname}</User>
+            </PostItem>
           ))}
+
           <DeleteBoardButton onClick={handleDeleteBoard}>
             Delete Board
           </DeleteBoardButton>
