@@ -58,7 +58,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (refreshToken) {
-      const newAccessToken = await refresh(refreshToken); // 변수 이름 변경 및 accessToken 갱신
+      const newAccessToken = await refresh(); // 변수 이름 변경 및 accessToken 갱신
+      console.log(newAccessToken);
       setAccessTokenState(newAccessToken); // 갱신된 accessToken 설정
     }
   };
@@ -71,7 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       },
       expiresIn ? Number(expiresIn) * 1000 : 0,
-    ); // expiresIn을 밀리초로 변환
+    );
 
     return () => clearTimeout(timer);
   }, [expiresIn]);

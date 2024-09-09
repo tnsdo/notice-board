@@ -81,8 +81,8 @@ const Img = styled.div`
   overflow: hidden;
   img {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -110,6 +110,10 @@ function Board() {
   const handleDelete = async () => {
     if (window.confirm("Do you want to delete this post?")) {
       try {
+        const imageId = post.images[0]?.id;
+        if (imageId) {
+          await api.delete(`/posts/${id}/image/${imageId}`);
+        }
         await api.delete(`/posts/${id}`);
         alert("Post deleted");
         navigate("/home");
