@@ -10,6 +10,7 @@ const BoardList = styled.ul`
   flex-wrap: wrap;
   list-style-type: none;
   padding: 0;
+  background-color: ${({ theme }) => theme.background};
 `;
 
 const BoardItem = styled.li`

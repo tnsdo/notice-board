@@ -4,13 +4,14 @@ import styled from "styled-components";
 import { useTheme } from "../context/themeProvider";
 
 const ToggleContainer = styled.div`
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   width: 100%;
   padding-top: 10px;
   padding-right: 30px;
+  z-index: 1000;
 `;
 
 const ToggleLabel = styled.label`
