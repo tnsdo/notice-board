@@ -7,7 +7,7 @@ import { createBoard } from "../../api/board";
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 70px;
 `;
 
 const TitleInput = styled.input`

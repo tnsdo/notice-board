@@ -5,7 +5,7 @@ const UserContainer = styled.div`
   width: 400px;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 70px;
   align-items: center;
 `;
 
