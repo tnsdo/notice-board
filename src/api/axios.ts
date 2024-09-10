@@ -14,9 +14,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`; // accessToken을 항상 헤더에 추가
-    }
+    config.headers.Authorization = `Bearer ${accessToken}`; // accessToken을 항상 헤더에 추가
     return config;
   },
   (error) => Promise.reject(error),

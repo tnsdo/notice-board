@@ -137,14 +137,13 @@ function EditPost() {
 
   const handleSave = async () => {
     const postData = {
-      title: editTitle.title, // Correctly pass the string value
-      body: editBody.body, // Correctly pass the string value
-      tags: editTag.split(",").map((tag) => tag.trim()), // Convert tags to array
+      title: editTitle.title,
+      body: editBody.body,
+      tags: editTag.split(",").map((tag) => tag.trim()),
     };
 
     try {
-      const response = await api.patch(`/posts/${id}`, postData);
-      console.log(response);
+      await api.patch(`/posts/${id}`, postData);
       alert("Post edited");
       navigate("/home");
     } catch (error) {
