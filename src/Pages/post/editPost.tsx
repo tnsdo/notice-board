@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { editPost } from "src/api/post";
 import styled from "styled-components";
 
 import { api } from "../../api/axios";
@@ -136,6 +137,7 @@ function EditPost() {
   if (!post) return <div>No posts found.</div>;
 
   const handleSave = async () => {
+    const id = post.id;
     const postData = {
       title: editTitle.title,
       body: editBody.body,
@@ -143,7 +145,7 @@ function EditPost() {
     };
 
     try {
-      await api.patch(`/posts/${id}`, postData);
+      await editPost(id, postData);
       alert("Post edited");
       navigate("/home");
     } catch (error) {

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "src/api/axios";
+import { deleteBoard } from "src/api/board";
 import styled from "styled-components";
 
+import { deletePost } from "../../api/post";
 import { getPostsByBoard } from "../../api/post";
 import { Post } from "../../type";
 
@@ -136,10 +137,10 @@ const BoardPage = () => {
       try {
         if (posts.length > 0) {
           for (const post of posts) {
-            await api.delete(`/posts/${post.id}`);
+            await deletePost(post.id);
           }
         }
-        await api.delete(`/boards/${boardUuid}`);
+        await deleteBoard(boardUuid as string);
         alert("Board deleted successfully");
         navigate("/home");
       } catch (error) {

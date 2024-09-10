@@ -10,11 +10,6 @@ export const getPostsByBoard = async (boardUuid: string) => {
   return response.data;
 };
 
-export const getPostsById = async (id: string) => {
-  const response = await api.delete(`/posts/${id}`);
-  return response.data;
-};
-
 export const writePost = async (
   boardUuid: string,
   postData: {
@@ -34,4 +29,44 @@ export const writePost = async (
     console.error("Error in writePost:", error);
     throw error;
   }
+};
+
+export const deletePost = async (id: string) => {
+  const response = await api.delete(`/posts/${id}`);
+  return response.data;
+};
+
+export const deleteImage = async (id: string, imageId: string) => {
+  const response = await api.delete(`/posts/${id}/image/${imageId}`);
+  return response.data;
+};
+
+export const editPost = async (
+  id: string,
+  postData: {
+    title: string;
+    body: string;
+    tags: string[];
+  },
+) => {
+  const response = await api.patch(`/posts/${id}`, postData);
+  return response.data;
+};
+
+export const postImage = async (id: string, image: File) => {
+  const formData = new FormData();
+  formData.append("file", image);
+
+  const response = await api.post(`/posts/${id}/image`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};
+
+export const serachPost = async (keyword: string) => {
+  const response = await api.get(`/posts/search?keyword=${keyword}`);
+  return response.data;
 };

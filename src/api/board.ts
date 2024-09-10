@@ -28,3 +28,8 @@ export const createBoard = async (title: string) => {
     throw error;
   }
 };
+
+export const deleteBoard = async (boardUuid: string) => {
+  const response = await api.delete(`/boards/${boardUuid}`);
+  return response.data;
+};

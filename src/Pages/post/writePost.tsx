@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "src/api/axios";
 import styled from "styled-components";
 
 import { getBoard } from "../../api/board";
+import { postImage } from "../../api/post";
 import { writePost } from "../../api/post";
 import { Board } from "../../type";
 
@@ -153,19 +153,10 @@ const WritePost: React.FC = () => {
 
     try {
       const response = await writePost(selectedBoardId, postData);
-      const postId = response.id; // 게시물 작성 후 postId 가져오기
+      const id = response.id;
 
-      // 이미지가 있을 경우에만 이미지 업로드 처리
       if (image) {
-        const formData = new FormData();
-        formData.append("file", image); // 이미지를 FormData에 추가
-
-        // 이미지 업로드 API 요청
-        await api.post(`/posts/${postId}/image`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data", // 파일 전송 시 사용
-          },
-        });
+        await postImage(id, image);
       }
 
       console.log("Post creation successful:", response);

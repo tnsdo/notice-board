@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { deleteImage, deletePost } from "src/api/post";
 import styled from "styled-components";
 
 import { api } from "../../api/axios";
@@ -129,11 +130,12 @@ function Board() {
   const handleDelete = async () => {
     if (window.confirm("Do you want to delete this post?")) {
       try {
+        const Id = post.id;
         const imageId = post.images[0]?.id;
         if (imageId) {
-          await api.delete(`/posts/${id}/image/${imageId}`);
+          await deleteImage(Id, imageId);
         }
-        await api.delete(`/posts/${id}`);
+        await deletePost(Id);
         alert("Post deleted");
         navigate("/home");
       } catch (error) {
