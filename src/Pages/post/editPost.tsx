@@ -9,7 +9,7 @@ import { Post } from "../../type";
 
 const Container = styled.div`
   width: 500px;
-  margin-top: 30px;
+  margin-top: 60px;
 `;
 const BoardTitle = styled.div`
   color: ${({ theme }) => theme.text};

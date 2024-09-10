@@ -108,7 +108,7 @@ function Home() {
   };
 
   const handleSearchResults = (results: Post[]) => {
-    setSearchResults(results); // Search 컴포넌트에서 검색 결과를 받아서 상태를 업데이트
+    setSearchResults(results);
   };
 
   return (
@@ -122,7 +122,6 @@ function Home() {
           <SignOut onClick={handleSignOut}>Sign Out</SignOut>
         </Header>
         <Search onSearch={handleSearchResults} />{" "}
-        {/* Search 컴포넌트에 검색 결과 핸들러 전달 */}
       </HeaderContainer>
 
       <ButtonContainer>
