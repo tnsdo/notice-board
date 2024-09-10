@@ -66,7 +66,7 @@ export const postImage = async (id: string, image: File) => {
   return response.data;
 };
 
-export const serachPost = async (keyword: string) => {
+export const searchPost = async (keyword: string) => {
   const response = await api.get(`/posts/search?keyword=${keyword}`);
   return response.data;
 };

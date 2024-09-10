@@ -8,7 +8,8 @@ import { Post } from "../../type";
 
 const Container = styled.div`
   width: 500px;
-  margin-top: 30px;
+  margin-top: 70px;
+  align-items: center;
 `;
 const BoardTitle = styled.div`
   color: ${({ theme }) => theme.text};

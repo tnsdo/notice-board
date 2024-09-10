@@ -21,7 +21,6 @@ const TitleInput = styled.input`
   background-color: ${({ theme }) => theme.InputContainer};
   font-weight: 600;
   font-size: 23px;
-  font-family: "Pretendard";
   border: none;
 
   ::placeholder {
@@ -82,7 +81,6 @@ const BoardSelect = styled.select`
   background-color: ${({ theme }) => theme.InputContainer};
   font-weight: 600;
   font-size: 18px;
-  font-family: "Pretendard";
   border: none;
   margin-bottom: 10px;
 

@@ -46,11 +46,18 @@ const Display = styled.div`
 `;
 
 const Header = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   text-align: center;
   font-size: 50px;
   font-weight: 600;
   line-height: 50px;
   color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.background};
+  z-index: 900;
+  padding: 20px 0 0;
 `;
 
 const AppContent: React.FC = () => {
