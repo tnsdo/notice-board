@@ -4,6 +4,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
+import { refresh } from "./user";
+
 export const api = axios.create({
   baseURL: "/local",
   headers: {
@@ -22,26 +24,41 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
 api.interceptors.response.use(
   async (response: AxiosResponse) => {
-    const { data } = response;
-
-    if (data.resultCode === 0) {
-      return response;
-    } else if (data.resultCode === 1001) {
-      // accessToken 만료 시 처리 생략
-      return response; // 그냥 응답을 반환
-    } else if (data.resultCode === 1002) {
-      alert("인증이 만료되었습니다. 다시 로그인해주세요.");
-      localStorage.clear();
-      window.location.href = "/signin";
-    }
     return response;
   },
   async (error: AxiosError) => {
-    if (!error.response) {
-      alert("네트워크 오류가 발생했습니다.");
+    const originalRequest = error.config as CustomAxiosRequestConfig; // Use the extended interface
+
+    if (error.response?.status === 401 && originalRequest) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const refreshTokenResponse = await refresh();
+
+          const { accessToken, refreshToken } = refreshTokenResponse;
+
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+          return api(originalRequest);
+        } catch (refreshError) {
+          alert("인증이 만료되었습니다. 다시 로그인해주세요.");
+          localStorage.clear();
+          window.location.href = "/signin";
+          return Promise.reject(refreshError);
+        }
+      }
     }
+
     return Promise.reject(error);
   },
 );
