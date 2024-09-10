@@ -17,6 +17,7 @@ import CreateBoard from "./Pages/Board/createBoard.tsx";
 import BoardPage from "./Pages/Board/page";
 import OnBoarding from "./Pages/Home/onBoarding.tsx";
 import Home from "./Pages/Home/page.tsx";
+import EditPost from "./Pages/post/editPost.tsx";
 import Post from "./Pages/post/page.tsx";
 import WritePost from "./Pages/post/writePost.tsx";
 import SignIn from "./Pages/Sign/signin.tsx";
@@ -93,6 +94,7 @@ const AppContentWithTheme: React.FC<{ handleHeaderClick: () => void }> = ({
           <Route path="/user" element={<MyPage />} />
           <Route path="/board/:boardUuid" element={<BoardPage />} />
           <Route path="/create-board" element={<CreateBoard />} />
+          <Route path="/edit-post/:id" element={<EditPost />} />
         </Routes>
       </Display>
     </Background>

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -18,21 +19,29 @@ const BoardTitle = styled.div`
   padding-bottom: 25px;
 `;
 
-const Title = styled.div`
+const Title = styled.input`
+  width: 500px;
+  height: 40px;
+  border-radius: 5px;
+  border-width: 1px;
   color: ${({ theme }) => theme.text};
-  font-size: 26px;
+  background-color: ${({ theme }) => theme.InputContainer};
   font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  padding-bottom: 10px;
+  font-size: 23px;
+  font-family: "Pretendard";
 `;
 
-const Body = styled.div`
+const Body = styled.input`
+  width: 500px;
   color: ${({ theme }) => theme.text};
-  font-size: 16px;
+  background-color: ${({ theme }) => theme.InputContainer};
+  border-radius: 5px;
   font-weight: 400;
-  line-height: 27px;
-  text-align: left;
+  font-size: 15px;
+  border-width: 1px;
+  height: 200px;
+  padding-bottom: 170px;
+  box-sizing: border-box;
 `;
 
 const UserId = styled.div`
@@ -51,14 +60,21 @@ const Tags = styled.div`
   margin-top: 30px;
   font-weight: 500;
   font-size: 16px;
+  flex-direction: row;
+  align-items: center;
 `;
 
-const Tag = styled.span`
-  background-color: ${({ theme }) => theme.tagBackground};
-  color: ${({ theme }) => theme.tagText};
-  font-size: 14px;
+const Tag = styled.input`
+  width: 500px;
+  height: 40px;
+  color: ${({ theme }) => theme.text};
+  background-color: ${({ theme }) => theme.InputContainer};
+  border-radius: 5px;
   font-weight: 400;
-  text-align: left;
+  font-size: 15px;
+  border-width: 1px;
+  margin-left: 5px;
+  box-sizing: border-box;
 `;
 
 const ButtonContainer = styled.div`
@@ -68,20 +84,7 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const EditButton = styled.button`
-  border-radius: 0;
-  border-color: ${({ theme }) => theme.buttonBorder};
-  background-color: ${({ theme }) => theme.buttonBackground};
-  color: ${({ theme }) => theme.text};
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 30px;
-  margin-right: auto;
-`;
-
-const DeleteButton = styled.button`
+const SaveButton = styled.button`
   border-radius: 0;
   border-color: ${({ theme }) => theme.buttonBorder};
   background-color: ${({ theme }) => theme.buttonBackground};
@@ -106,9 +109,12 @@ const Img = styled.div`
   }
 `;
 
-function Board() {
+function EditPost() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [editTitle, setEditTitle] = useState({ title: "" });
+  const [editBody, setEditBody] = useState({ body: "" });
+  const [editTag, setEditTag] = useState("");
 
   const {
     data: post,
@@ -118,6 +124,9 @@ function Board() {
     queryKey: ["post", id],
     queryFn: () =>
       api.get<Post>(`/posts/${id}`).then((res) => {
+        setEditTitle({ title: res.data.title });
+        setEditBody({ body: res.data.body });
+        setEditTag(res.data.tags.join(", "));
         return res.data;
       }),
   });
@@ -126,32 +135,37 @@ function Board() {
   if (error) return <div>Failed to load posts.</div>;
   if (!post) return <div>No posts found.</div>;
 
-  const handleDelete = async () => {
-    if (window.confirm("Do you want to delete this post?")) {
-      try {
-        const imageId = post.images[0]?.id;
-        if (imageId) {
-          await api.delete(`/posts/${id}/image/${imageId}`);
-        }
-        await api.delete(`/posts/${id}`);
-        alert("Post deleted");
-        navigate("/home");
-      } catch (error) {
-        console.error("Failed to delete post:", error);
-      }
-    }
-  };
+  const handleSave = async () => {
+    const postData = {
+      title: editTitle.title, // Correctly pass the string value
+      body: editBody.body, // Correctly pass the string value
+      tags: editTag.split(",").map((tag) => tag.trim()), // Convert tags to array
+    };
 
-  const handleEdit = async () => {
-    navigate(`/edit-post/${id}`);
+    try {
+      const response = await api.patch(`/posts/${id}`, postData);
+      console.log(response);
+      alert("Post edited");
+      navigate("/home");
+    } catch (error) {
+      console.error("Failed to edit post:", error);
+    }
   };
 
   return (
     <Container>
       <BoardTitle>{post.board.title}</BoardTitle>
-      <Title>{post.title}</Title>
+      <Title
+        type="text"
+        value={editTitle.title}
+        onChange={(e) => setEditTitle({ title: e.target.value })}
+      />
       <UserId>Written by {post.createdBy.nickname}</UserId>
-      <Body>{post.body}</Body>
+      <Body
+        type="text"
+        value={editBody.body}
+        onChange={(e) => setEditBody({ body: e.target.value })}
+      />
       {post.images && post.images.length > 0 ? (
         <Img>
           <img
@@ -161,18 +175,18 @@ function Board() {
         </Img>
       ) : null}
       <Tags>
-        Tags [
-        {post.tags.map((tag) => (
-          <Tag key={tag}>{tag},</Tag>
-        ))}{" "}
-        ]
+        Tag
+        <Tag
+          type="text"
+          value={editTag}
+          onChange={(e) => setEditTag(e.target.value)}
+        />
       </Tags>
       <ButtonContainer>
-        <EditButton onClick={handleEdit}>Edit</EditButton>
-        <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+        <SaveButton onClick={handleSave}>Save</SaveButton>
       </ButtonContainer>
     </Container>
   );
 }
 
-export default Board;
+export default EditPost;

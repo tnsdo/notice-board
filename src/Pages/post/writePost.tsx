@@ -92,7 +92,7 @@ const BoardSelect = styled.select`
   }
 `;
 
-const FileInput = styled.input`
+const ImageInput = styled.input`
   width: 500px;
   height: 40px;
   margin-top: 10px;
@@ -215,7 +215,7 @@ const WritePost: React.FC = () => {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <FileInput type="file" accept="image/*" onChange={handleImageChange} />
+      <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
       {previewUrl && (
         <ImagePreview>
           <img src={previewUrl} alt="Image Preview" />
