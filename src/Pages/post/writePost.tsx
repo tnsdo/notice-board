@@ -146,7 +146,6 @@ const WritePost: React.FC = () => {
       title: title,
       body: content,
       tags: tags.split(",").map((tag) => tag.trim()),
-      //tag가 숫자면 하나여도 보이는데 문자로 하나만 있는 tag는 안됨 ,, 왜..?
     };
 
     try {

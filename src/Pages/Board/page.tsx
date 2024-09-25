@@ -1,104 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteBoard } from "src/api/board";
-import styled from "styled-components";
 
 import { deletePost } from "../../api/post";
 import { getPostsByBoard } from "../../api/post";
+import * as style from "../../styles/boardPage";
 import { Post } from "../../type";
-
-const Display = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const BoardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 70px;
-`;
-
-const BoardTitle = styled.div`
-  font-size: 25px;
-  font-weight: 500;
-  line-height: 15px;
-  text-align: left;
-  color: ${({ theme }) => theme.text};
-
-  margin-bottom: 10px;
-`;
-
-const BoardCreator = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 15px;
-  text-align: left;
-  color: ${({ theme }) => theme.text};
-  margin-top: 5px;
-`;
-const PostItem = styled.div`
-  background-color: ${({ theme }) => theme.signContainer};
-  height: auto;
-  height: 80px;
-  width: 500px;
-  margin-bottom: 10px;
-  border-radius: 15px;
-  align-items: flex-start;
-  flex-direction: column;
-  margin-top: 20px;
-  list-style: none;
-  text-decoration: none;
-  display: block;
-  cursor: pointer;
-`;
-
-const PostTitle = styled.div`
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 15px;
-  text-align: left;
-  color: ${({ theme }) => theme.text};
-  margin-left: 20px;
-  margin-right: 9px;
-  padding-top: 20px;
-`;
-
-const PostBody = styled.div`
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 15px;
-  text-align: left;
-  color: ${({ theme }) => theme.text};
-  margin-left: 20px;
-  margin-right: 9px;
-  padding-top: 8px;
-`;
-
-const User = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 15px;
-  text-align: left;
-  color: ${({ theme }) => theme.text};
-  text-align: right;
-  margin-right: 10px;
-`;
-
-const DeleteBoardButton = styled.button`
-  border-radius: 0;
-  border-color: ${({ theme }) => theme.buttonBorder};
-  background-color: ${({ theme }) => theme.buttonBackground};
-  color: ${({ theme }) => theme.text};
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 20px;
-`;
 
 const BoardPage = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
@@ -155,26 +62,29 @@ const BoardPage = () => {
   };
 
   return (
-    <Display>
+    <style.Display>
       {postCount === 0 ? (
-        <BoardCreator>No posts found.</BoardCreator>
+        <style.BoardCreator>No posts found.</style.BoardCreator>
       ) : (
-        <BoardContainer>
-          <BoardTitle>{boardTitle}</BoardTitle>
-          <BoardCreator>created by {boardCreator}</BoardCreator>
+        <style.BoardContainer>
+          <style.BoardTitle>{boardTitle}</style.BoardTitle>
+          <style.BoardCreator>created by {boardCreator}</style.BoardCreator>
           {posts.map((post) => (
-            <PostItem key={post.id} onClick={() => handlePostClick(post.id)}>
-              <PostTitle>{post.title}</PostTitle>
-              <PostBody>{post.body}</PostBody>
-              <User>{post.createdBy.nickname}</User>
-            </PostItem>
+            <style.PostItem
+              key={post.id}
+              onClick={() => handlePostClick(post.id)}
+            >
+              <style.PostTitle>{post.title}</style.PostTitle>
+              <style.PostBody>{post.body}</style.PostBody>
+              <style.User>{post.createdBy.nickname}</style.User>
+            </style.PostItem>
           ))}
-        </BoardContainer>
+        </style.BoardContainer>
       )}
-      <DeleteBoardButton onClick={handleDeleteBoard}>
+      <style.DeleteBoardButton onClick={handleDeleteBoard}>
         Delete Board
-      </DeleteBoardButton>
-    </Display>
+      </style.DeleteBoardButton>
+    </style.Display>
   );
 };
 
